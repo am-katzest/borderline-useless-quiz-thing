@@ -10,7 +10,7 @@
                     {:user-type :participant
                      :id 5
                      :cnt 5
-                     :name "mrau"}))
+                     :username "mrau"}))
   (t/is (s/validate sut/ClientState
                     {:user-type :organizer
                      :id 5

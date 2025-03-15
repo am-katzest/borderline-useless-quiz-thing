@@ -16,7 +16,7 @@
   {:user-type (s/eq :participant)
    :id s/Int
    :cnt s/Int
-   :name s/Str})
+   :username s/Str})
 
 (s/defschema ClientState
   (s/if #(= :participant (:user-type %)) Participant Organizer))
