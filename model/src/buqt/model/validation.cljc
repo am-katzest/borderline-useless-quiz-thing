@@ -6,15 +6,17 @@
 
 ;; todo: possibly add a predicate that checks if id is one of the correct ones?
 
+(s/defschema Organizer
+  {:user-type (s/eq :organizer)
+   :id s/Int
+   :cnt s/Int
+   :participants {s/Int s/Str}})
+
+(s/defschema Participant
+  {:user-type (s/eq :participant)
+   :id s/Int
+   :cnt s/Int
+   :name s/Str})
+
 (s/defschema ClientState
-  (am/abstract-map-schema
-   :user-type
-   {:id s/Int
-    :cnt s/Int}))
-
-(am/extend-schema Organizer ClientState [:organizer]
-                  {:participants {s/Int s/Str}})
-
-(am/extend-schema Participant ClientState [:participant]
-                  {:name s/Str})
-
+  (s/if #(= :participant (:user-type %)) Participant Organizer))
