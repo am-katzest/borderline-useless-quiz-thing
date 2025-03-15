@@ -1,4 +1,6 @@
 {:paths ["src" "test"]
+ :deps {prismatic/schema {:git/url "https://github.com/plumatic/schema"
+                          :git/sha "8fcb57f87ffe74185e1f1da72be4933bd4aad4d2"}}
  :aliases
  {:test
   {:extra-paths ["test"]
