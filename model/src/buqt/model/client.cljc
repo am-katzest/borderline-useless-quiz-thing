@@ -2,6 +2,19 @@
 
 
 ;; doesn't concern itself with `cnt`, that's handled elsewhere™
+
+(defn make-participant [id]
+  {:user-type :participant
+   :id id
+   :cnt 0
+   :username ""})
+
+(defn make-organizer [id]
+  {:user-type :organizer
+   :id id
+   :cnt 0
+   :id->name {}})
+
 (defmulti  apply-update (fn [state msg] [(:user-type state) (:type msg)]))
 
 (defmethod apply-update [:participant :update/change-username]
