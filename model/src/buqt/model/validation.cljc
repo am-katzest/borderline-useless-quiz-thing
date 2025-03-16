@@ -10,7 +10,7 @@
   {:user-type (s/eq :organizer)
    :id s/Int
    :cnt s/Int
-   :participants {s/Int s/Str}})
+   :id->name {s/Int s/Str}})
 
 (s/defschema Participant
   {:user-type (s/eq :participant)

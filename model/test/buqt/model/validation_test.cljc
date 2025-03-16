@@ -15,4 +15,4 @@
                     {:user-type :organizer
                      :id 5
                      :cnt 5
-                     :participants {3 "mrau"}})))
+                     :id->name {3 "mrau"}})))
