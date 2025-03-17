@@ -27,6 +27,10 @@
   [state {:keys [username id]}]
   (update state :id->name assoc id username))
 
+(defmethod apply-update [:organizer :update/add-participant]
+  [state {:keys [id]}]
+  (update state :id->name assoc id ""))
+
 (defmethod apply-update :update/reset
   [_state {:keys [state]}]
   state)

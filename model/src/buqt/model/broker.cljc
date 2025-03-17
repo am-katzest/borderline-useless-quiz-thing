@@ -23,6 +23,11 @@
      [[id msg]
       [(organizer-id broker) msg]]]))
 
+(defmethod dispatch-msgs :action/add-participant
+  [broker {:keys [id]}]
+  [(update broker :clients assoc id (client/make-participant id))
+   [[(organizer-id broker) {:type :update/add-participant :id id}]]])
+
 (defmethod dispatch-msgs :action/ask-for-reset
   [broker {:keys [id]}]
   (let [msg {:type :update/reset :state (client broker id)}]
@@ -49,19 +54,6 @@
         broker'' (update-local-clients broker' msg+cnts)]
     [broker'' msg+cnts]))
 
-(defn new-id [broker]
-  (loop [id 1]
-    (if-not (contains? (:clients broker) id) id
-            (recur (inc id)))))
-
-(defn add-new-participant [broker]
-  (let [id (new-id broker)
-        client-state (client/make-participant id)]
-    [(update broker :clients assoc id client-state)
-     id
-     {:type :update/reset :state client-state}]))
-
-(defn init-broker []
-  (let [organizer-id 0]
-    {:organizer organizer-id
-     :clients {organizer-id (client/make-organizer organizer-id)}}))
+(defn init-broker [organizer-id]
+  {:organizer organizer-id
+   :clients {organizer-id (client/make-organizer organizer-id)}})

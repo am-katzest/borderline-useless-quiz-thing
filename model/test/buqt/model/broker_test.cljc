@@ -31,5 +31,14 @@
     (t/is (= broker broker-a))
     (t/is (= [[1 {:type :update/reset :cnt 0 :state organizer-1}]] msgs))))
 
-(t/deftest broker-join-id-generation-test
-  (t/is (= 3 (broker/new-id broker-a))))
+(t/deftest user-management-test
+  (t/is (= {:organizer 10
+            :clients {10 (client/make-organizer 10)}}
+           (broker/init-broker 10)))
+  (t/is
+   (= [[10 {:type :update/add-participant, :id 20, :cnt 0}]]
+      (second (broker/process-action (broker/init-broker 10)
+                                     {:type :action/add-participant :id 20}))))
+  (t/is (= {:user-type :organizer, :id 10, :cnt 1, :id->name {20 ""}}
+           ((:clients (first (broker/process-action (broker/init-broker 10)
+                                                    {:type :action/add-participant :id 20}))) 10))))
