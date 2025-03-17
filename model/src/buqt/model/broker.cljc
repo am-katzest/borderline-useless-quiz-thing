@@ -12,6 +12,7 @@
 
 (defn- organizer-id [broker] (:organizer broker))
 (defn- organizer [broker] (get (:clients broker) (:organizer broker)))
+(defn- client [broker id] (get-in broker [:clients id]))
 
 (defmulti dispatch-msgs (fn [_b action] (:type action)))
 
@@ -22,9 +23,15 @@
      [[id msg]
       [(organizer-id broker) msg]]]))
 
+(defmethod dispatch-msgs :action/ask-for-reset
+  [broker {:keys [id]}]
+  (let [msg {:type :update/reset :state (client broker id)}]
+    [broker
+     [[id msg]]]))
+
 (defn add-msgs-cnts [broker msgs]
   (let [cnt (fn [id]
-              (-> broker :clients (get id) :cnt))
+              (:cnt (client broker id)))
         add-cnt (fn [[target body]]
                   [target (assoc body :cnt (cnt target))])]
     (mapv add-cnt msgs)))
