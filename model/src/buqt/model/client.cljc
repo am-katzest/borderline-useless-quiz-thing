@@ -55,7 +55,7 @@
     (let [state (first state-vector)
           state' ((taking-care-of-cnt apply-update) state update)]
       (cond
-        (= ::cnt-mismatch state') (with-msg state-vector {:type :action/ask-for-reset})
+        (= ::cnt-mismatch state') (with-msg state-vector {:type :action/ask-for-reset :id (:id state)})
         (= state' (second state-vector)) (no-msg (restv state-vector))
         :else (no-msg [state'])))
     (no-msg [(:state update)])))
