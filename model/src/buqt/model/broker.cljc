@@ -48,3 +48,20 @@
         msg+cnts (add-msgs-cnts broker' msgs)
         broker'' (update-local-clients broker' msg+cnts)]
     [broker'' msg+cnts]))
+
+(defn new-id [broker]
+  (loop [id 1]
+    (if-not (contains? (:clients broker) id) id
+            (recur (inc id)))))
+
+(defn add-new-participant [broker]
+  (let [id (new-id broker)
+        client-state (client/make-participant id)]
+    [(update broker :clients assoc id client-state)
+     id
+     {:type :update/reset :state client-state}]))
+
+(defn init-broker []
+  (let [organizer-id 0]
+    {:organizer organizer-id
+     :clients {organizer-id (client/make-organizer organizer-id)}}))
