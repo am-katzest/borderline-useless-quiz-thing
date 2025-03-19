@@ -1,0 +1,14 @@
+{:paths ["src" "test"]
+ :deps {prismatic/schema {:git/url "https://github.com/plumatic/schema"
+                          :git/sha "8fcb57f87ffe74185e1f1da72be4933bd4aad4d2"}
+        org.clojure/core.async {:mvn/version "1.7.701"}
+        com.taoensso/timbre {:mvn/version "6.6.1"}
+        buqt/model {:local/root "../model"}}
+ :aliases
+ {:test
+  {:extra-paths ["test"]
+   :extra-deps {io.github.cognitect-labs/test-runner
+                {:git/url "https://github.com/cognitect-labs/test-runner.git"
+                 :git/sha     "3f288f1f16d167723ad87cc35b1dfee3c1681e10"}}
+   :main-opts ["-m" "cognitect.test-runner"]
+   :exec-fn cognitect.test-runner.api/test}}}
