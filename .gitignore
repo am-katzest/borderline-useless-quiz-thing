@@ -16,3 +16,4 @@ pom.xml.asc
 .cpcache
 .clj-kondo/
 .lsp/
+/spa/package-lock.json
