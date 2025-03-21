@@ -3,20 +3,6 @@
             [clojure.core.async :as a]
             [clojure.test :as t]))
 
-(t/deftest sender-test
-  (let [c (sut/make-sender)
-        p1 (promise)
-        p2 (a/chan 10)]
-    (a/>!! c :3)
-    (a/>!! c #(deliver p1 %))
-    (a/>!! c :4)
-    (t/is (= :4 (deref p1 100 :missing)))
-    (a/>!! c #(a/>!! p2 %))
-    (a/>!! c :5)
-    (a/>!! c :6)
-    (t/is (= :5 (a/<!! p2)))
-    (t/is (= :6 (a/<!! p2)))))
-
 (defn read-first-n-from-chan [chan n]
   (loop [n n acc []]
     (if (zero? n) acc
@@ -47,6 +33,19 @@
     (f 3)
     (f 4)
     (t/is (= [1 2 3] @res))))
+
+(t/deftest sender-test
+  (let [c (sut/make-sender)
+        [c1 a1] (make-mock-chan 1)
+        [c2 a2] (make-mock-chan 2)]
+    (a/>!! c :3)
+    (a/>!! c c1)
+    (a/>!! c :4)
+    (t/is (= [:4] @a1))
+    (a/>!! c c2)
+    (a/>!! c :5)
+    (a/>!! c :6)
+    (t/is (= [:5 :6] @a2))))
 
 (t/deftest process-msg-test
   (let [broker (sut/create-broker 1)]
