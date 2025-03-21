@@ -64,3 +64,45 @@
         (t/is (= 1 (count msgs)))
         (t/is (= :update/reset (:type (second (first msgs)))))
         (t/is (= broker broker-with-replaced-connection))))))
+
+(t/deftest broker-test
+  (t/testing "connecting organizer"
+    (let [organizer-id 10
+          broker-chan (sut/spawn-broker organizer-id)
+          [c a] (make-mock-chan 1)]
+      (sut/change-connection! broker-chan organizer-id c)
+      (let [res (first @a)]
+        (t/is (= :update/reset (:type res)))
+        (t/is (= 0 (:cnt res)))
+        (t/is (= 0 (:cnt (:state res))))
+        (t/is (= 10 (:id (:state res)))))))
+  (t/testing "adding user"
+    (t/testing "organizer receives a message"
+      (let [organizer-id 10
+            user-id 5
+            broker-chan (sut/spawn-broker organizer-id)
+            [c a] (make-mock-chan 2)]
+        (sut/change-connection! broker-chan organizer-id c)
+        (sut/add-participiant! broker-chan user-id)
+        (t/is (= {:type :update/add-participant, :id user-id, :cnt 0} (second @a)))))
+    (t/testing "new user gets a reset"
+      (let [organizer-id 10
+            user-id 5
+            broker-chan (sut/spawn-broker organizer-id)
+            [c a] (make-mock-chan 1)]
+        (sut/add-participiant! broker-chan user-id)
+        (sut/change-connection! broker-chan user-id c)
+        (t/is (= :update/reset (-> @a first :type)))
+        (t/is (= user-id (-> @a first :state :id))))))
+  (t/testing "changing username"
+    (let [organizer-id 10
+          user-id 5
+          broker-chan (sut/spawn-broker organizer-id)
+          [co ao] (make-mock-chan 3)
+          [cu au] (make-mock-chan 2)]
+      (sut/add-participiant! broker-chan user-id)
+      (sut/change-connection! broker-chan organizer-id co)
+      (sut/change-connection! broker-chan user-id cu)
+      (sut/send-action! broker-chan {:type :action/change-username :username "new" :id user-id})
+      (t/is (= {:type :update/change-username :id user-id :username "new"} (dissoc (last @ao) :cnt)))
+      (t/is (= (dissoc (last @ao) :cnt) (dissoc (last @au) :cnt))))))
