@@ -27,15 +27,16 @@
   [broker (concat more-msgs msgs)])
 
 (defn process-msg [broker [type body]]
-  (condp = type
-    :action (let [[model' msgs] (m/process-action (:broker broker) body)]
-              [(assoc broker :broker model') msgs])
-    :add-participant (process-msg
-                      (update broker :output-chans assoc body (make-sender))
-                      [:action {:type :action/add-participant :id body}])
-    :change-connection (let [[id conn] body]
-                         (insert-msgs-before (process-msg broker [:action {:type :action/ask-for-reset :id id}])
-                                             [[id conn]]))))
+  (try (condp = type
+         :action (let [[model' msgs] (m/process-action (:broker broker) body)]
+                   [(assoc broker :broker model') msgs])
+         :add-participant (process-msg
+                           (update broker :output-chans assoc body (make-sender))
+                           [:action {:type :action/add-participant :id body}])
+         :change-connection (let [[id conn] body]
+                              (insert-msgs-before (process-msg broker [:action {:type :action/ask-for-reset :id id}])
+                                                  [[id conn]])))
+       (catch Throwable _ [broker []])))
 
 (defn run-broker [broker]
   (a/go-loop [broker broker]

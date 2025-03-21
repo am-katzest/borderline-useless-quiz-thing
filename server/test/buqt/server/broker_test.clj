@@ -105,4 +105,17 @@
       (sut/change-connection! broker-chan user-id cu)
       (sut/send-action! broker-chan {:type :action/change-username :username "new" :id user-id})
       (t/is (= {:type :update/change-username :id user-id :username "new"} (dissoc (last @ao) :cnt)))
+      (t/is (= (dissoc (last @ao) :cnt) (dissoc (last @au) :cnt)))))
+  (t/testing "invalid message handling"
+    (let [organizer-id 10
+          user-id 5
+          broker-chan (sut/spawn-broker organizer-id)
+          [co ao] (make-mock-chan 3)
+          [cu au] (make-mock-chan 2)]
+      (sut/add-participiant! broker-chan user-id)
+      (sut/change-connection! broker-chan organizer-id co)
+      (sut/change-connection! broker-chan user-id cu)
+      (sut/send-action! broker-chan {:type :action/evil :evilness 2})
+      (sut/send-action! broker-chan {:type :action/change-username :username "new" :id user-id})
+      (t/is (= {:type :update/change-username :id user-id :username "new"} (dissoc (last @ao) :cnt)))
       (t/is (= (dissoc (last @ao) :cnt) (dissoc (last @au) :cnt))))))
