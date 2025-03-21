@@ -64,3 +64,11 @@
 
 (defn send-action! [broker-chan a]
   (a/>!! broker-chan [:action a]))
+
+(defonce quiz-id->broker-chan (atom {}))
+
+(defn create-quiz! [organizer-id]
+  (let [broker-chan (spawn-broker organizer-id)
+        quiz-id (utils/random-hexstring 10)]
+    (swap! quiz-id->broker-chan assoc quiz-id broker-chan)
+    quiz-id))
