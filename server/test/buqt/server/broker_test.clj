@@ -17,6 +17,37 @@
     (t/is (= :5 (a/<!! p2)))
     (t/is (= :6 (a/<!! p2)))))
 
+(defn read-first-n-from-chan [chan n]
+  (loop [n n acc []]
+    (if (zero? n) acc
+      (let [v (a/alt!!
+                [(a/timeout 100)] ::timeout
+                [chan] ([v] v))]
+        (if (= v ::timeout) acc
+            (recur (dec n) (conj acc v))))
+        )))
+
+(defn make-mock-chan [n]
+  (let [chan (a/chan (+ 100 n))]
+    [#(a/>!! chan %) (delay (read-first-n-from-chan chan n))]))
+
+(t/deftest mocked-chan-test
+  (let [[f res] (make-mock-chan 3)]
+    (f 1)
+    (f 2)
+    (t/is (= [1 2] @res)))
+  (let [[f res] (make-mock-chan 3)]
+    (f 1)
+    (f 2)
+    (f 3)
+    (t/is (= [1 2 3] @res)))
+  (let [[f res] (make-mock-chan 3)]
+    (f 1)
+    (f 2)
+    (f 3)
+    (f 4)
+    (t/is (= [1 2 3] @res))))
+
 (t/deftest process-msg-test
   (let [broker (sut/create-broker 1)]
     (t/testing "adding-user"
