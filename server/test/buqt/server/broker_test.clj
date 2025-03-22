@@ -52,7 +52,15 @@
     (t/testing "adding-user"
       (let [[broker-with-user msgs] (sut/process-msg broker [:add-participant 5])]
         (t/is (= msgs [[1 {:type :update/add-participant, :id 5, :cnt 0}]]))
-        (t/is (= 2 (count (:clients (:broker broker-with-user)))))))
+        (t/is (= 2 (count (:clients (:broker broker-with-user))))))
+      (t/testing "is idempotent"
+        (let [[broker-with-user _] (sut/process-msg broker [:add-participant 5])
+              [broker-added-user-again msgs1] (sut/process-msg broker-with-user [:add-participant 5])
+              [broker-added-organizer msgs2] (sut/process-msg broker-with-user [:add-participant 1])]
+          (t/is (= [] msgs1))
+          (t/is (= [] msgs2))
+          (t/is (= broker-with-user broker-added-user-again))
+          (t/is (= broker-with-user broker-added-organizer)))))
     (t/testing "replacing-connection"
       (let [[broker-with-replaced-connection msgs] (sut/process-msg broker [:change-connection [1 :3]])]
         (t/is (= 2 (count msgs)))
