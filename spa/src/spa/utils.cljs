@@ -5,14 +5,14 @@
         (-> sstr (.substring 1) (.split "&"))
         (map (fn [x] (let [[a b] (.split x "=")]
                        (when (and a b (not= "" a) (not= "" b))
-                         [(keyword a) (keyword b)]))))
+                         [(keyword a) b]))))
         (into {}))
        (catch js/Error _ {})))
 
 (defn map->sstr [m]
   (if-not (pos? (count m)) ""
           (->> m
-               (map (fn [[a b]] (str (name a) "=" (name b))))
+               (map (fn [[a b]] (str (name a) "=" (str b))))
                (reduce #(str %1 "&" %2))
                (str "?"))))
 
