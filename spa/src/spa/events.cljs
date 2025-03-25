@@ -42,8 +42,41 @@
  (fn [_ _]
    db/default-db))
 (re-frame/reg-event-fx
+ ::join-quiz
+ (fn [_ [_ quiz-id]]
+   {:http-xhrio (get-id-request [::join-continue quiz-id])}))
+
+(re-frame/reg-event-fx
+ ::join-continue
+ (fn [_ [_ quiz-id {user-id :id token :token}]]
+   {:dispatch [::start-connection user-id quiz-id token]}))
+
+(re-frame/reg-event-fx
  ::store-token
  (fn [_ [_ continuation {user-id :id token :token :as res}]]
    (utils/store-token! user-id token)
    {:dispatch (conj continuation res)}))
 
+(re-frame/reg-event-fx
+ ::create-quiz
+ (fn [_ _]
+   {:http-xhrio (get-id-request [::create-quiz-got-id])}
+   ))
+
+(re-frame/reg-event-fx
+ ::create-quiz-got-id
+ (fn [_ [_ auth]]
+   {:http-xhrio (->
+                 (request :post "/quiz")
+                 (add-auth auth)
+                 (add-handlers
+                  [::quiz-created-success auth]
+                  [::error])
+                 (assoc :body {}))}
+   ))
+
+(re-frame/reg-event-fx
+ ::quiz-created-success
+ (fn [_ [_ {user-id :id token :token} {quiz-id :id}]]
+   {:dispatch [::start-connection user-id quiz-id token]}
+   ))
