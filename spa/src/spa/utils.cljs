@@ -27,3 +27,14 @@
 
 (defn store-url-info! [m]
   (change-url-query (map->sstr m)))
+
+
+(defn id->str [id]
+  (str "token-for-" id))
+
+(defn get-token [id]
+  (let [t (.getItem (.-localStorage js/window) (id->str id))]
+    (when (and (some? t) (not= "" t)) t)))
+
+(defn store-token! [id token]
+  (.setItem (.-localStorage js/window) (id->str id) (str token)))
