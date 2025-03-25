@@ -29,7 +29,21 @@
   (assoc request 
          :on-success on-success
          :on-failure on-failure))
+
+
+(defn get-id-request [on-success]
+  (-> (request :get "/id")
+      (add-handlers
+       [::store-token on-success]
+       [::error])))
+
 (re-frame/reg-event-db
  ::initialize-db
  (fn [_ _]
    db/default-db))
+(re-frame/reg-event-fx
+ ::store-token
+ (fn [_ [_ continuation {user-id :id token :token :as res}]]
+   (utils/store-token! user-id token)
+   {:dispatch (conj continuation res)}))
+
