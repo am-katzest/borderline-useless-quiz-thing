@@ -66,6 +66,7 @@
   (a/>!! broker-chan [:change-connection [id f]]))
 
 (defn send-action! [broker-chan a]
+  (log/debugf "received action %s" a)
   (a/>!! broker-chan [:action a]))
 
 (defonce quiz-id->broker-chan (atom {}))
@@ -75,3 +76,6 @@
         quiz-id (utils/random-hexstring 10)]
     (swap! quiz-id->broker-chan assoc quiz-id broker-chan)
     quiz-id))
+
+(defn get-broker [quiz-id]
+  (@quiz-id->broker-chan quiz-id))
