@@ -49,7 +49,7 @@
         (t/is (=
                [[(assoc participant-a :cnt 1 :username "mrau")
                  (assoc participant-a :cnt 2 :username "mrrrp")]
-                [[{:type :action/change-username, :username "mrrrp"}]]]
+                [{:type :action/change-username, :username "mrrrp"}]]
                (sut/apply-input-whole initial-state input)))))))
 
 (t/deftest reset-test

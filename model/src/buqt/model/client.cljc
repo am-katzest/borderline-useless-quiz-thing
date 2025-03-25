@@ -88,5 +88,5 @@
         action (input->action state input)
         excepted-update (action->expected-update state action)
         state' (assoc (apply-update state excepted-update) :cnt (inc (:cnt state)))]
-    (with-msg (conj state-vector state') [action])))
+    (with-msg (conj state-vector state') action)))
 
