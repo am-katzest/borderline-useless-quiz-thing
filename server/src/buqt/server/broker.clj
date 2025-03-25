@@ -1,6 +1,7 @@
 (ns buqt.server.broker
   (:require [buqt.model.broker :as m]
             [clojure.core.async :as a]
+            [buqt.server.utils :as utils]
             [taoensso.timbre :as log]))
 
 ;; uselessly overengineered, but it takes some complexity away from run-broker
