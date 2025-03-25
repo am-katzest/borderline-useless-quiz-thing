@@ -20,5 +20,5 @@
 (defn id-token-valid? [id token]
   (and (string? token)
        (int? id)
-       (> 10 (count token))
+       (< 10 (count token))
        (= token (get-in @state [:id->token id]))))
