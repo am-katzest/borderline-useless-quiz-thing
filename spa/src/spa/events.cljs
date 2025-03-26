@@ -80,3 +80,10 @@
  (fn [_ [_ {user-id :id token :token} {quiz-id :id}]]
    {:dispatch [::start-connection user-id quiz-id token]}
    ))
+
+(re-frame/reg-event-fx
+ ::connected
+ (fn [{db :db} [_ user-id quiz-id send!]]
+   (utils/store-url-info! {:user-id user-id :quiz-id quiz-id})
+   {:db (assoc db :send send! :running true :quiz-id quiz-id)}
+   ))

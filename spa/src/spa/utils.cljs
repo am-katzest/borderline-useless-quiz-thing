@@ -19,15 +19,21 @@
 (defn get-url-info []
   (sstr->map (.. js/window -location -search)))
 
-(defn change-url-query "without reloading" [q]
-  (let [hist (.. js/window -history)
-        url (new js/URL (.. js/window -location -href))]
-    (set!  (.-search url) q)
+
+(defn change-url "without reloading" [url]
+  (let [hist (.. js/window -history)]
     (.pushState hist nil nil url)))
 
-(defn store-url-info! [m]
-  (change-url-query (map->sstr m)))
+(defn url-with-changed-query [q]
+  (let [url (new js/URL (.. js/window -location -href))]
+    (set!  (.-search url) q)
+    url))
 
+(defn store-url-info! [m]
+  (change-url (url-with-changed-query (map->sstr m))))
+
+(defn get-url-with-info [m]
+  (str (url-with-changed-query (map->sstr m))))
 
 (defn id->str [id]
   (str "token-for-" id))
