@@ -14,6 +14,33 @@
 
 (def api-root "/api")
 
+(defn start-connection [user-id quiz-id token]
+  (a/go
+    (js/console.log "starting connection")
+    (let [stream (a/<! (ws/connect ;; "ws://localhost:8642/api/connect"
+                        "ws://localhost:8091"
+                        {:format fmt/edn}))]
+      (a/>! (:out stream) {:type :handshake  :id user-id :quiz-id quiz-id :token token})
+      (js/console.log "sent handshake")
+      (if (= :ok (a/<! (:in stream)))
+        (do
+          (js/console.log "handshake accepted")
+          (re-frame/dispatch [::connected  user-id quiz-id
+                              (fn [msg]
+                                (a/go (a/>! (:out stream) msg)))])
+          (loop []
+            (if-let [update (a/<! (:in stream))]
+              (do
+                (println "we have an update!" update)
+                (re-frame/dispatch [::apply-update update])
+                (recur))
+              (re-frame/dispatch [::disconnected])))
+          )
+        (do
+          (js/console.log "stream closed")
+          (re-frame/dispatch [::error])
+          (ws/close stream))))))
+
 (defn request [method path]
   {:method          method
    :uri             (str api-root path)
@@ -41,6 +68,13 @@
  ::initialize-db
  (fn [_ _]
    db/default-db))
+
+(re-frame/reg-event-fx
+ ::start-connection
+ (fn [_ [_ user-id quiz-id token]]
+   (start-connection user-id quiz-id token)
+   {}))
+
 (re-frame/reg-event-fx
  ::join-quiz
  (fn [_ [_ quiz-id]]
