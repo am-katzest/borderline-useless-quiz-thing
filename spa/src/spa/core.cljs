@@ -2,11 +2,10 @@
   (:require
    [reagent.dom :as rdom]
    [re-frame.core :as re-frame]
+   [spa.utils :as u]
    [spa.events :as events]
    [spa.views :as views]
-   [spa.config :as config]
-   ))
-
+   [spa.config :as config]))
 
 (defn dev-setup []
   (when config/debug?
