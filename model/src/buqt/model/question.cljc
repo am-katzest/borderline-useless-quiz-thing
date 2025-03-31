@@ -1,5 +1,7 @@
 (ns buqt.model.question
-  (:require [buqt.model.utils :as u]))
+  (:require #?(:clj [schema.core :as s]
+               :cljs [schema.core :as s :include-macros true])
+            [buqt.model.utils :as u]))
 
 ;; interface
 (defn- question-type [q & _] (:question-type q))
@@ -20,6 +22,14 @@
     :points 1
     :state :hidden}
    desc))
+
+;; validation
+
+(s/defschema base-question
+  {:description s/Str
+   :question-type s/Keyword
+   :points (s/constrained s/Num (complement neg?))
+   :state (s/enum :hidden :active :stopped :revealed)})
 
 (defn update-valid? [before after]
   (let [invariants (conj (invariants before) :question-type)]
@@ -53,8 +63,16 @@
   [_]
   [:count])
 
+(s/defschema abcd-question
+  (into base-question
+        {:correct-answer (s/constrained s/Int (complement neg?))
+         :count (s/constrained s/Int pos-int?)
+         :possible-answers [s/Str]}))
+
 (defmethod validate :abcd
   [question]
-  (and (= (:count question)
+  (and (not (s/check abcd-question question))
+       (= (:count question)
           (count (:possible-answers question)))
        (<= 0 (:correct-answer question) (:count question))))
+
