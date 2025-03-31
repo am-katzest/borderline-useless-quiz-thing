@@ -16,9 +16,14 @@
    :cnt 0
    :id->name {}})
 
-(defmulti  apply-update (fn [state msg] (if (= (:type msg) :update/reset)
-                                          :update/reset
-                                          [(:user-type state) (:type msg)])))
+
+(def ^:private user-hierarchy
+  (-> (make-hierarchy)
+      (derive :participant :both)
+      (derive :organizer :both)))
+
+(defmulti apply-update (fn [state msg] [(:user-type state) (:type msg)])
+  :hierarchy user-hierarchy)
 
 (defmethod apply-update [:participant :update/change-username]
   [state {:keys [username]}]
@@ -32,7 +37,7 @@
   [state {:keys [id]}]
   (update state :id->name assoc id ""))
 
-(defmethod apply-update :update/reset
+(defmethod apply-update [:both :update/reset]
   [_state {:keys [state]}]
   state)
 
