@@ -8,12 +8,14 @@
   {:user-type :participant
    :id id
    :cnt 0
+   :questions {}
    :username ""})
 
 (defn make-organizer [id]
   {:user-type :organizer
    :id id
    :cnt 0
+   :questions {}
    :id->name {}})
 
 
