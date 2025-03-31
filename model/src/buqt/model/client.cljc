@@ -1,4 +1,5 @@
-(ns buqt.model.client)
+(ns buqt.model.client
+  (:require [buqt.model.utils :refer [assert*] :as u]))
 
 
 ;; doesn't concern itself with `cnt`, that's handled elsewhere™
@@ -50,7 +51,7 @@
 ;; when message x0->y1 is received vector is replaced by [y1]
 
 (defn gui-state "fancy `last`" [state-vector]
-  (assert (vector? state-vector))
+  (assert* (vector? state-vector))
   (nth state-vector (dec (count state-vector))))
 
 (defn restv "rest but preserving type" [v]
@@ -74,7 +75,7 @@
 (defmulti action->expected-update (fn [_s action] (:type action)))
 
 (defmethod input->action :input/change-username [state input]
-  (assert (= :participant (:user-type state)))
+  (u/participant* state)
   {:type :action/change-username
    :username (:username input)})
 
