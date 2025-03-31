@@ -15,3 +15,7 @@
   (t/is (thrown? clojure.lang.ExceptionInfo (sut/question {:type :abcd :count 0})))
   (t/is (thrown? clojure.lang.ExceptionInfo (sut/question {:type :abcd :count 50}))))
 
+(t/deftest checking-test
+  (t/is (= 1 (sut/grade (sut/question {:type :abcd :count 5}) 0)))
+  (t/is (= 0 (sut/grade (sut/question {:type :abcd :count 5}) 3))))
+

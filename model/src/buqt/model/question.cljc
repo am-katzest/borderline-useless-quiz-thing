@@ -5,6 +5,8 @@
 (defn- question-type [q & _] (:question-type q))
 
 (defmulti initialize question-type)
+
+(defmulti grade "(question, answer) -> points" question-type)
 ;; creation
 
 (defn question [desc]
@@ -14,10 +16,14 @@
     :points 1
     :state :hidden}
    desc))
+;; helpers
 
 (def ^:private letters
   (for [i (range 26)]
     (str (char (+ (int \A) i)))))
+
+(defn- all-or-zero [q b]
+  (if b (:points q) 0))
 
 ;; abcd
 (defmethod initialize :abcd
@@ -28,3 +34,7 @@
            :count count
            :possible-answers answers
            :correct-answer 0)))
+
+(defmethod grade :abcd
+  [question answer]
+  (all-or-zero question (= (:correct-answer question) answer)))
