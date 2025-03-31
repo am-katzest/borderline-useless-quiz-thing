@@ -23,3 +23,9 @@
   (let [q (sut/question {:type :abcd :count 2})]
     (t/is (= true (sut/validate q)))))
 
+(t/deftest update-validation-test
+  (let [q2 (sut/question {:type :abcd :count 2})
+        q3 (sut/question {:type :abcd :count 3})]
+    (t/is (= true (sut/update-valid? q2 q2)))
+    (t/is (= false (sut/update-valid? q2 q3)))))
+

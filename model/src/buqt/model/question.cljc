@@ -8,6 +8,8 @@
 
 (defmulti grade "(question, answer) -> points" question-type)
 
+(defmulti invariants "returns keys which cannot be changed" question-type)
+
 (defmulti validate question-type)
 ;; creation
 
@@ -18,6 +20,12 @@
     :points 1
     :state :hidden}
    desc))
+
+(defn update-valid? [before after]
+  (let [invariants (conj (invariants before) :question-type)]
+    (and (= (select-keys before invariants)
+            (select-keys after invariants))
+         (validate after))))
 ;; helpers
 
 (def ^:private letters
@@ -40,6 +48,10 @@
 (defmethod grade :abcd
   [question answer]
   (all-or-zero question (= (:correct-answer question) answer)))
+
+(defmethod invariants :abcd
+  [_]
+  [:count])
 
 (defmethod validate :abcd
   [question]
