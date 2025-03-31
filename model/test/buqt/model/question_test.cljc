@@ -21,7 +21,15 @@
 
 (t/deftest validation-test
   (let [q (sut/question {:type :abcd :count 2})]
-    (t/is (= true (sut/validate q)))))
+    (t/is (not= true (sut/validate (update q :count inc))))
+    (t/is (= true (sut/validate q)))
+    (t/testing "schema validation"
+      (t/is (not= true (sut/validate (assoc q :meow :3))))
+      (t/is (not= true (sut/validate (assoc q :possible-answers ["meow" 2 3 4]))))
+      (t/is (not= true (sut/validate (assoc q :description :3))))
+      (t/is (not= true (sut/validate (dissoc q :description))))
+      (t/is (not= true (sut/validate (assoc q :state :meow))))
+      (t/is (not= true (sut/validate (assoc q :points -2)))))))
 
 (t/deftest update-validation-test
   (let [q2 (sut/question {:type :abcd :count 2})
