@@ -19,3 +19,7 @@
   (t/is (= 1 (sut/grade (sut/question {:type :abcd :count 5}) 0)))
   (t/is (= 0 (sut/grade (sut/question {:type :abcd :count 5}) 3))))
 
+(t/deftest validation-test
+  (let [q (sut/question {:type :abcd :count 2})]
+    (t/is (= true (sut/validate q)))))
+

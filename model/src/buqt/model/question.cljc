@@ -7,6 +7,8 @@
 (defmulti initialize question-type)
 
 (defmulti grade "(question, answer) -> points" question-type)
+
+(defmulti validate question-type)
 ;; creation
 
 (defn question [desc]
@@ -38,3 +40,9 @@
 (defmethod grade :abcd
   [question answer]
   (all-or-zero question (= (:correct-answer question) answer)))
+
+(defmethod validate :abcd
+  [question]
+  (and (= (:count question)
+          (count (:possible-answers question)))
+       (<= 0 (:correct-answer question) (:count question))))
