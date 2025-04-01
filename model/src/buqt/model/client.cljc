@@ -25,7 +25,7 @@
       (derive :organizer :both)))
 
 (defmulti apply-update (fn [state msg] [(:user-type state) (:type msg)])
-  :hierarchy user-hierarchy)
+  :hierarchy #'user-hierarchy)
 
 (defmethod apply-update [:participant :update/change-username]
   [state {:keys [username]}]
