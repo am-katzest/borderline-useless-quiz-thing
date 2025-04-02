@@ -56,4 +56,4 @@
   (t/testing "asking"
     (t/is (= [{:type :action/ask-for-reset :id 5}] (second (sut/apply-update-whole [{:cnt 1 :id 5}] {:type :meow :cnt 5})))))
   (t/testing "applying"
-    (t/is (= [{:meow :mraw}] (first (sut/apply-update-whole [{:cnt 1}] {:type :update/reset :state {:meow :mraw}}))))))
+    (t/is (= [{:meow :mraw}] (first (sut/apply-update-whole [{:cnt 1 :user-type :participant}] {:type :update/reset :state {:meow :mraw}}))))))
