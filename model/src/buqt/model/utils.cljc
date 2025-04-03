@@ -13,7 +13,7 @@
 
 
 (defn- user-type [broker action]
-  (->> action :id (:clients broker) :user-type))
+  (->> action :id ((:clients broker)) :user-type))
 
 (defn participant** [broker action]
   (assert* (= :participant (user-type broker action))))
