@@ -29,7 +29,7 @@
   {:description s/Str
    :question-type s/Keyword
    :points (s/constrained s/Num (complement neg?))
-   :state (s/enum :hidden :active :stopped :revealed)})
+   :state (s/enum :hidden :visible :active :stopped :revealed)})
 
 (defn update-valid? [before after]
   (let [invariants (conj (invariants before) :question-type)]
