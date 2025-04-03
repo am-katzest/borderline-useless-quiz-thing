@@ -13,6 +13,8 @@
 (defmulti invariants "returns keys which cannot be changed" question-type)
 
 (defmulti validate question-type)
+
+(defmulti secrets "returns keys which must be kept from participants" question-type)
 ;; creation
 
 (defn question [desc]
@@ -45,6 +47,23 @@
 (defn- all-or-zero [q b]
   (if b (:points q) 0))
 
+;; keeping information from clients
+
+(defn- participant-can-see-question? [state]
+  (not= state :hidden))
+
+(defn- participant-can-change-answer? [state]
+  (= state :active))
+
+(defn- remove-keys [m c]
+  (reduce dissoc m c))
+
+(defn censor [question]
+  (let [state (:state question)]
+    (cond (participant-can-see-answers? state) question
+          (participant-can-see-question? state) (remove-keys question (secrets question))
+          :else nil)))
+
 ;; abcd
 (defmethod initialize :abcd
   [base {:keys [count]}]
@@ -75,4 +94,8 @@
        (= (:count question)
           (count (:possible-answers question)))
        (<= 0 (:correct-answer question) (:count question))))
+
+(defmethod secrets :abcd
+  [_]
+  [:correct-answer])
 

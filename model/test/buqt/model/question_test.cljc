@@ -37,3 +37,16 @@
     (t/is (= true (sut/update-valid? q2 q2)))
     (t/is (= false (sut/update-valid? q2 q3)))))
 
+(t/deftest censoring-test
+  (let [base-q (sut/question {:type :abcd :count 3})
+        q #(assoc base-q :state %)
+        partially-visible (dissoc base-q :correct-answer)]
+    (doseq [[state correct]
+            [[:hidden nil]
+             [:visible partially-visible]
+             [:active partially-visible]
+             [:stopped partially-visible]
+             [:revealed base-q]]]
+      (t/testing state
+        (t/is (= (some-> correct (assoc :state state))
+                 (sut/censor (q state))))))))
