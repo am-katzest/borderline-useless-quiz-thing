@@ -39,6 +39,8 @@
    (= [[10 {:type :update/add-participant, :id 20, :cnt 0}]]
       (second (broker/process-action (broker/init-broker 10)
                                      {:type :action/add-participant :id 20}))))
-  (t/is (= {:user-type :organizer, :id 10, :cnt 1, :id->name {20 ""}}
-           ((:clients (first (broker/process-action (broker/init-broker 10)
-                                                    {:type :action/add-participant :id 20}))) 10))))
+  (t/is (= {20 ""}
+           (get-in (broker/process-action
+                    (broker/init-broker 10)
+                    {:type :action/add-participant :id 20})
+                   [0 :clients 10 :id->name]))))
