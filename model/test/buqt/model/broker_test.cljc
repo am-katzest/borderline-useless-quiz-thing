@@ -25,6 +25,9 @@
               [1 {:type :update/change-username, :id 2, :username "new", :cnt 0}]]
              msgs))))
 
+(t/deftest username-only-for-participant-test
+  (t/is (thrown? clojure.lang.ExceptionInfo (broker/process-action broker-a {:type :action/change-username :id 1 :username "new"}))))
+
 (t/deftest reset-test
   (let [msg-a {:type :action/ask-for-reset :id 1}
         [broker msgs] (broker/process-action broker-a msg-a)]

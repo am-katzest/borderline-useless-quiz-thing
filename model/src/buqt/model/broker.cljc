@@ -1,5 +1,6 @@
 (ns buqt.model.broker
-  (:require [buqt.model.client :as client]))
+  (:require [buqt.model.client :as client]
+            [buqt.model.utils :as u]))
 ;; broker holds state of each client
 ;; and likely some other internal state as well
 ;; but we'll see about that
@@ -17,7 +18,8 @@
 (defmulti dispatch-msgs (fn [_b action] (:type action)))
 
 (defmethod dispatch-msgs :action/change-username
-  [broker {:keys [id username]}]
+  [broker {:keys [id username] :as action}]
+  (u/participant** broker action)
   (let [msg {:type :update/change-username :id id :username username}]
     [broker
      [[id msg]
