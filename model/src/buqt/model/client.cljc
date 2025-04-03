@@ -1,5 +1,7 @@
 (ns buqt.model.client
-  (:require [buqt.model.utils :refer [assert*] :as u]))
+  (:require [buqt.model.utils :refer [assert*] :as u]
+            [buqt.model.questions :as qs]
+            [buqt.model.question :as q]))
 
 
 ;; doesn't concern itself with `cnt`, that's handled elsewhere™
@@ -98,3 +100,17 @@
         state' (assoc (apply-update state excepted-update) :cnt (inc (:cnt state)))]
     (with-msg (conj state-vector state') action)))
 
+(defmethod input->action :input/add-question [state input]
+  (u/organizer* state)
+  {:type :action/add-question
+   :desc (:desc input)})
+
+(defmethod action->expected-update :action/add-question [state {:keys [desc]}]
+  (u/organizer* state)
+  {:type :update/change-question
+   :id (qs/next-question-id (:questions state))
+   :question (q/question desc)})
+
+(defmethod apply-update [:both :update/change-question]
+  [state {:keys [id question]}]
+  (update state :questions qs/update-question id question))

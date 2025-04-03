@@ -1,10 +1,12 @@
 (ns buqt.model.questions
   (:require [buqt.model.question :as q]))
 
-(defn- next-question-id [state]
-  (->> state keys (cons 0) (apply max) inc))
+(defn next-question-id [questions]
+  (->> questions keys (cons 0) (apply max) inc))
 
-(defn add-question [questions desc]
-  (let [id (next-question-id questions)
-        q (q/question desc)]
-    (assoc questions id q)))
+(defn update-question [questions id updated]
+  (assoc questions id updated))
+
+(defn update-valid? [questions id replacement]
+  (let [existing (questions id)]
+    (q/update-valid? existing replacement)))

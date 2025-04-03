@@ -57,3 +57,13 @@
     (t/is (= [{:type :action/ask-for-reset :id 5}] (second (sut/apply-update-whole [{:cnt 1 :id 5}] {:type :meow :cnt 5})))))
   (t/testing "applying"
     (t/is (= [{:meow :mraw}] (first (sut/apply-update-whole [{:cnt 1 :user-type :participant}] {:type :update/reset :state {:meow :mraw}}))))))
+
+(t/deftest question-creation-test
+  (let [organizer (sut/make-organizer 1)
+        input {:type :input/add-question :desc {:type :abcd :count 3}}
+        action (sut/input->action organizer input)
+        update (sut/action->expected-update organizer action)
+        organizer' (sut/apply-update organizer update)]
+    (t/is (= 1 (count (:questions organizer'))))
+    (t/is (= :abcd (:question-type (first (vals (:questions organizer'))))))))
+
