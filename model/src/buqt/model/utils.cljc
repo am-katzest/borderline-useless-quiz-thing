@@ -11,3 +11,12 @@
 (defn organizer* [state]
   (assert* (= :organizer (:user-type state))))
 
+
+(defn- user-type [broker action]
+  (->> action :id (:clients broker) :user-type))
+
+(defn participant** [broker action]
+  (assert* (= :participant (user-type broker action))))
+
+(defn organizer** [broker action]
+  (assert* (= :organizer (user-type broker action))))
