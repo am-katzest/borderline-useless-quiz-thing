@@ -37,7 +37,7 @@
      (conj
       (for [pid (participant-ids broker)]
         [pid censored-msg])
-      [(organizer-id broker) question])]))
+      [(organizer-id broker) msg])]))
 
 (defmethod dispatch-msgs :action/add-participant
   [broker {:keys [id]}]

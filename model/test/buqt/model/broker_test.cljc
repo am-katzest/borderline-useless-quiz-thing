@@ -62,11 +62,15 @@
     (t/is (= 2 (count msgs)))
     (let [to-organizer (message-to msgs (:id organizer-1))
           to-participant (message-to msgs (:id participant-2))]
-      (t/is (= 0 (:correct-answer to-organizer)))
-      (t/is (not= 0 (:correct-answer to-participant))))
+      (doseq [msg msgs]
+        (t/is (= :update/change-question (:type (second msg)))))
+      (t/is (= true (q/validate (:question to-organizer))))
+      (t/is (= 0 (:correct-answer (:question to-organizer))))
+      (t/is (not= 0 (:correct-answer (:question to-participant))))
+      (t/is (= (:id to-organizer) (:id to-participant))))
     (t/testing "no participants"
       (let [broker (update broker-a :clients dissoc 2)
             [broker' msgs] (broker/send-question-updates broker 5 q)]
         (t/is (= broker' broker))
         (t/is (= 1 (count msgs)))
-        (t/is (= 0 (:correct-answer (message-to msgs (:id organizer-1)))))))))
+        (t/is (= 0 (:correct-answer (:question (message-to msgs (:id organizer-1)))))))) msgs))
