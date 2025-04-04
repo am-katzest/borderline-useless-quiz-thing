@@ -2,6 +2,7 @@
   (:require
    [buqt.model.broker :as broker]
    [buqt.model.client :as client]
+   [buqt.model.question :as q]
    #?(:clj [clojure.test :as t]
       :cljs [cljs.test :as t :include-macros true])))
 
@@ -47,3 +48,19 @@
                     (broker/init-broker 10)
                     {:type :action/add-participant :id 20})
                    [0 :clients 10 :id->name]))))
+
+(defn message-to [msgs id]
+  (->> msgs
+       (filter (comp #{id} first))
+       first
+       second))
+
+(t/deftest send-question-updates-test
+  (let [q (q/question {:type :abcd :count 3})
+        [broker msgs] (broker/send-question-updates broker-a 5 q)]
+    (t/is (= broker broker-a))
+    (t/is (= 2 (count msgs)))
+    (let [to-organizer (message-to msgs (:id organizer-1))
+          to-participant (message-to msgs (:id participant-2))]
+      (t/is (= 0 (:correct-answer to-organizer)))
+      (t/is (not= 0 (:correct-answer to-participant))))))

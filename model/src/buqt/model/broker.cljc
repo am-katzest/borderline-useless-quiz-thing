@@ -1,5 +1,6 @@
 (ns buqt.model.broker
   (:require [buqt.model.client :as client]
+            [buqt.model.question :as q]
             [buqt.model.utils :as u]))
 ;; broker holds state of each client
 ;; and likely some other internal state as well
@@ -13,6 +14,7 @@
 
 (defn- organizer-id [broker] (:organizer broker))
 (defn- organizer [broker] (get (:clients broker) (:organizer broker)))
+(defn- participant-ids [broker] (remove #{(:organizer broker)} (keys (:clients broker))))
 (defn- client [broker id] (get-in broker [:clients id]))
 
 (defmulti dispatch-msgs (fn [_b action] (:type action)))
@@ -24,6 +26,18 @@
     [broker
      [[id msg]
       [(organizer-id broker) msg]]]))
+
+(defn send-question-updates [broker id question]
+  (let [msg 
+        {:type :update/change-question
+         :id id
+         :question question}
+        censored-msg (update msg :question q/censor)]
+    [broker
+     (conj
+      (for [pid (participant-ids broker)]
+        [pid censored-msg])
+      [(organizer-id broker) question])]))
 
 (defmethod dispatch-msgs :action/add-participant
   [broker {:keys [id]}]
