@@ -5,18 +5,18 @@
   ([p t] (when-not p (throw (ex-info t {}))))
   ([p t m] (when-not p (throw (ex-info t m)))))    
 
-(defn participant* [state]
-  (assert* (= :participant (:user-type state))))
+(defn- make-user-assert [expected get]
+  (fn [& args]
+    (let [actual (apply get args)]
+      (assert* (= expected actual) "wrong user type" {:expected expected :actual actual}))))
 
-(defn organizer* [state]
-  (assert* (= :organizer (:user-type state))))
+(def participant* (make-user-assert :participant :user-type))
 
+(def organizer* (make-user-assert :organizer :user-type))
 
-(defn- user-type [broker action]
+(defn- user-type-for-broker [broker action]
   (->> action :id ((:clients broker)) :user-type))
 
-(defn participant** [broker action]
-  (assert* (= :participant (user-type broker action))))
+(def participant** (make-user-assert :participant user-type-for-broker))
 
-(defn organizer** [broker action]
-  (assert* (= :organizer (user-type broker action))))
+(def organizer** (make-user-assert :organizer user-type-for-broker))
