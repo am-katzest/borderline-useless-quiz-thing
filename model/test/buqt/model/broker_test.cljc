@@ -63,4 +63,10 @@
     (let [to-organizer (message-to msgs (:id organizer-1))
           to-participant (message-to msgs (:id participant-2))]
       (t/is (= 0 (:correct-answer to-organizer)))
-      (t/is (not= 0 (:correct-answer to-participant))))))
+      (t/is (not= 0 (:correct-answer to-participant))))
+    (t/testing "no participants"
+      (let [broker (update broker-a :clients dissoc 2)
+            [broker' msgs] (broker/send-question-updates broker 5 q)]
+        (t/is (= broker' broker))
+        (t/is (= 1 (count msgs)))
+        (t/is (= 0 (:correct-answer (message-to msgs (:id organizer-1)))))))))
