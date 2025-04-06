@@ -12,11 +12,11 @@
 ;; state contains all the newest client states
 ;; {:clients {13 {} 12 {}} :organizer 12}
 
-(defn- organizer-id [broker] (:organizer broker))
-(defn- organizer [broker] (get (:clients broker) (:organizer broker)))
-(defn- participant-ids [broker] (remove #{(:organizer broker)} (keys (:clients broker))))
-(defn- client [broker id] (get-in broker [:clients id]))
-(defn- questions [broker] (:questions (organizer broker)))
+(defn organizer-id [broker] (:organizer broker))
+(defn organizer [broker] (get (:clients broker) (:organizer broker)))
+(defn participant-ids [broker] (remove #{(:organizer broker)} (keys (:clients broker))))
+(defn client [broker id] (get-in broker [:clients id]))
+(defn questions [broker] (:questions (organizer broker)))
 
 (defmulti dispatch-msgs (fn [_b action] (:type action)))
 
