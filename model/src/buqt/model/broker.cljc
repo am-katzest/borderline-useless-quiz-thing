@@ -16,6 +16,7 @@
 (defn- organizer [broker] (get (:clients broker) (:organizer broker)))
 (defn- participant-ids [broker] (remove #{(:organizer broker)} (keys (:clients broker))))
 (defn- client [broker id] (get-in broker [:clients id]))
+(defn- questions [broker] (:questions (organizer broker)))
 
 (defmulti dispatch-msgs (fn [_b action] (:type action)))
 
