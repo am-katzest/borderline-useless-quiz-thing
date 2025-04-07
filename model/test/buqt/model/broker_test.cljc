@@ -74,3 +74,17 @@
         (t/is (= broker' broker))
         (t/is (= 1 (count msgs)))
         (t/is (= 0 (:correct-answer (:question (message-to msgs (:id organizer-1)))))))) msgs))
+
+(t/deftest adding-question-test
+  (let [[broker' msgs] (broker/process-action
+                        broker-a
+                        {:type :action/add-question
+                         :desc {:type :abcd :count 3}
+                         :id 1})
+        organizer (broker/organizer broker')
+        participants (broker/participans broker')]
+    (t/is (= 1 (first (keys (:questions organizer)))))
+    (t/is (= :abcd (->> organizer :questions vals first :question-type)))
+    (t/is (= 0 (->> organizer :questions vals first :correct-answer)))
+    (t/is (= nil (->> participants first :questions)))
+    (t/is (not= 0 (->> participants first :questions vals first :correct-answer)))))
