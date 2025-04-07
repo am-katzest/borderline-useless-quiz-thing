@@ -19,6 +19,8 @@
 (defn client [broker id] (get-in broker [:clients id]))
 (defn participants [broker] (map #(client broker %) (participant-ids broker)))
 (defn questions [broker] (:questions (organizer broker)))
+(defn question [broker question-id] ((questions broker) question-id))
+(defn question-as [broker id question-id] ((:questions (client broker id)) question-id))
 
 (defmulti dispatch-msgs (fn [_b action] (:type action)))
 
