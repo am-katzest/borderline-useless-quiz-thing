@@ -105,11 +105,26 @@
   {:type :action/add-question
    :desc (:desc input)})
 
+(defmethod input->action :input/update-question [state {id :question-id question' :question}]
+  (u/organizer* state)
+  (let [question (get-in state [:questions id])]
+    (u/assert* question "no question with this id")
+    (u/assert* (q/update-valid? question question') "update invalid")
+    {:type :action/update-question
+     :question-id id
+     :question question'}))
+
 (defmethod action->expected-update :action/add-question [state {:keys [desc]}]
   (u/organizer* state)
   {:type :update/change-question
    :id (qs/next-question-id (:questions state))
    :question (q/question desc)})
+
+(defmethod action->expected-update :action/update-question [state {:keys [question-id question]}]
+  (u/organizer* state)
+  {:type :update/change-question
+   :id question-id
+   :question question})
 
 (defmethod apply-update [:both :update/change-question]
   [state {:keys [id question]}]

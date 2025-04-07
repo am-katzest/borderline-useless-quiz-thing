@@ -31,3 +31,51 @@
                  (dissoc client-on-client :cnt)))))
     broker'))
 
+
+(t/deftest updating-questions-test
+  (let [broker (process-input (make-broker 1)
+                              0
+                              {:type :input/add-question
+                               :desc {:type :abcd :count 3}})
+        [id question] (first (broker/questions broker))]
+    (t/is (= :abcd (:question-type question)))
+    (t/testing "simple change"
+      (let [question' (assoc question :description "meow")
+            broker' (process-input broker 0 {:type :input/update-question
+                                             :question-id id
+                                             :question question'})]
+        (t/is (= question' (broker/question broker' id)))
+        (t/is (= nil (broker/question-as broker' 1 id)))))
+    (t/testing "negative"
+      (let [question-fails #(t/is (thrown? clojure.lang.ExceptionInfo (process-input broker %1 %2)))]
+        (t/testing "validation"
+          (question-fails
+           0
+           {:type :input/update-question
+            :question-id id
+            :question (assoc question :state :meow)}))
+        (t/testing "context-dependent validation"
+          (question-fails
+           0
+           {:type :input/update-question
+            :question-id id
+            :question (assoc question :count 2 :possible-answers ["meow" "mraw"])}))
+        (t/testing "participant"
+          (question-fails
+           1
+           {:type :input/update-question
+            :question-id id
+            :question (assoc question :description "meow")}))
+        (t/testing "invalid question id"
+          (question-fails
+           0
+           {:type :input/update-question
+            :question-id 5
+            :question (assoc question :description "meow")}))))
+    (t/testing "state change"
+      (let [question' (assoc question :state :visible)
+            broker' (process-input broker 0 {:type :input/update-question
+                                             :question-id id
+                                             :question question'})]
+        (t/is (= question' (broker/question broker' id)))
+        (t/is (= (q/censor question') (broker/question-as broker' 1 id)))))))

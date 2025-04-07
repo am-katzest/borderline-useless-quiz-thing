@@ -51,6 +51,14 @@
         question (q/question desc)]
     (send-question-updates broker id question)))
 
+(defmethod dispatch-msgs :action/update-question
+  [broker {question' :question id :question-id :as action}]
+  (u/organizer** broker action)
+  (let [question ((questions broker) id)]
+    (u/assert* question' "no question with this id")
+    (u/assert* (q/update-valid? question question') "update invalid"))
+  (send-question-updates broker id question'))
+
 (defmethod dispatch-msgs :action/add-participant
   [broker {:keys [id]}]
   [(update broker :clients assoc id (client/make-participant id))
