@@ -69,6 +69,13 @@
           (participant-can-see-question? state) (remove-keys question (secrets question))
           :else nil)))
 
+;; answers
+
+(defn can-change-answer? [question answer]
+  (and question
+       (participant-can-change-answer? (:state question))
+       (or (nil? answer) (validate-answer question answer))))
+
 ;; abcd
 (defmethod initialize :abcd
   [base {:keys [count]}]

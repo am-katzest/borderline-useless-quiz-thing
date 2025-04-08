@@ -59,4 +59,12 @@
     (t/is (= false (sut/validate-answer q -1)))
     (t/is (= false (sut/validate-answer q 4)))))
 
+(t/deftest answer-chargeability-test
+  (let [q (sut/question {:type :abcd :count 4})
+        q-changeable (assoc q :state :active)]
+    (t/is (= true (sut/can-change-answer? q-changeable 3)))
+    (t/is (= false (sut/can-change-answer? q 3)))
+    (t/is (= true (sut/can-change-answer? q-changeable nil)))
+    (t/is (= false (sut/can-change-answer? q nil)))))
+
 
