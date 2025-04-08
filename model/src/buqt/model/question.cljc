@@ -52,6 +52,9 @@
 (defn- participant-can-see-question? [state]
   (not= state :hidden))
 
+(defn participant-can-see-answers? [state]
+  (= state :revealed))
+
 (defn- participant-can-change-answer? [state]
   (= state :active))
 
