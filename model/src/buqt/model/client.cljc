@@ -11,6 +11,7 @@
    :id id
    :cnt 0
    :questions {}
+   :question->answer {}
    :username ""})
 
 (defn make-organizer [id]
@@ -18,6 +19,7 @@
    :id id
    :cnt 0
    :questions {}
+   :participant->question->answer {}
    :id->name {}})
 
 
@@ -39,7 +41,9 @@
 
 (defmethod apply-update [:organizer :update/add-participant]
   [state {:keys [id]}]
-  (update state :id->name assoc id ""))
+  (-> state
+      (update :id->name assoc id "")
+      (update :participant->question->answer assoc id {})))
 
 (defmethod apply-update [:both :update/reset]
   [_state {:keys [state]}]

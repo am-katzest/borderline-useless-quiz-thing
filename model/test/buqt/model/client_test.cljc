@@ -52,6 +52,11 @@
                 [{:type :action/change-username, :username "mrrrp"}]]
                (sut/apply-input-whole initial-state input)))))))
 
+(t/deftest adding-participant-test
+  (let [added (sut/apply-update (sut/make-organizer 0) {:type :update/add-participant :id 5})]
+    (t/is (= {5 ""} (:id->name added)))
+    (t/is (= {5 {}} (:participant->question->answer added)))))
+
 (t/deftest reset-test
   (t/testing "asking"
     (t/is (= [{:type :action/ask-for-reset :id 5}] (second (sut/apply-update-whole [{:cnt 1 :id 5}] {:type :meow :cnt 5})))))
