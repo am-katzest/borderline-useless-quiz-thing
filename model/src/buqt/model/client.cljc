@@ -118,6 +118,15 @@
      :question-id id
      :question question'}))
 
+(defmethod input->action :input/change-answer [state {id :question-id answer :answer}]
+  (u/participant* state)
+  (let [question (get-in state [:questions id])]
+    (u/assert* question "no question with this id")
+    (u/assert* (q/can-change-answer? question answer))
+    {:type :action/change-answer
+     :question-id id
+     :answer answer}))
+
 (defmethod action->expected-update :action/add-question [state {:keys [desc]}]
   (u/organizer* state)
   {:type :update/change-question
@@ -130,6 +139,22 @@
    :id question-id
    :question question})
 
+(defmethod action->expected-update :action/change-answer [state {:keys [question-id answer]}]
+  (u/participant* state)
+  {:type :update/change-answer
+   :participant-id (:id state)
+   :question-id question-id
+   :answer answer})
+
 (defmethod apply-update [:both :update/change-question]
   [state {:keys [id question]}]
   (update state :questions qs/update-question id question))
+
+(defmethod apply-update [:organizer :update/change-answer]
+  [state {:keys [participant-id question-id answer]}]
+  (assoc-in state [:participant->question->answer participant-id question-id] answer))
+
+(defmethod apply-update [:participant :update/change-answer]
+  [state {:keys [participant-id question-id answer]}]
+  (u/assert* (= (:id state) participant-id) "update at wrong participant")
+  (assoc-in state [:question->answer question-id] answer))

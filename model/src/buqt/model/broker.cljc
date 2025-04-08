@@ -59,6 +59,20 @@
     (u/assert* (q/update-valid? question question') "update invalid"))
   (send-question-updates broker id question'))
 
+(defmethod dispatch-msgs :action/change-answer [broker {:keys [question-id id answer] :as action}]
+  (u/participant** broker action)
+  (let [question (question broker question-id)]
+    (u/assert* question)
+    (u/assert* (q/can-change-answer? question answer))
+    (let [msg
+          {:type :update/change-answer
+           :question-id question-id
+           :participant-id id
+           :answer answer}]
+      [broker
+       [[id msg]
+        [(organizer-id broker) msg]]])))
+
 (defmethod dispatch-msgs :action/add-participant
   [broker {:keys [id]}]
   [(update broker :clients assoc id (client/make-participant id))
