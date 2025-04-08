@@ -82,9 +82,9 @@
                          :desc {:type :abcd :count 3}
                          :id 1})
         organizer (broker/organizer broker')
-        participants (broker/participans broker')]
+        participants (broker/participants broker')]
     (t/is (= 1 (first (keys (:questions organizer)))))
     (t/is (= :abcd (->> organizer :questions vals first :question-type)))
     (t/is (= 0 (->> organizer :questions vals first :correct-answer)))
-    (t/is (= nil (->> participants first :questions)))
+    (t/is (= nil (->> participants first :questions second)))
     (t/is (not= 0 (->> participants first :questions vals first :correct-answer)))))
