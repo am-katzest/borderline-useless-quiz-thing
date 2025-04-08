@@ -50,3 +50,13 @@
       (t/testing state
         (t/is (= (some-> correct (assoc :state state))
                  (sut/censor (q state))))))))
+
+(t/deftest answer-validity-test
+  (let [q (sut/question {:type :abcd :count 4})]
+    (t/is (= true (sut/validate-answer q 3)))
+    (t/is (= true (sut/validate-answer q 0)))
+    (t/is (= false (sut/validate-answer q nil)))
+    (t/is (= false (sut/validate-answer q -1)))
+    (t/is (= false (sut/validate-answer q 4)))))
+
+

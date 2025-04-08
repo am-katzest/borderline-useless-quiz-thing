@@ -15,6 +15,8 @@
 (defmulti validate question-type)
 
 (defmulti secrets "returns keys which must be kept from participants" question-type)
+
+(defmulti validate-answer "is the answer format proper" question-type)
 ;; creation
 
 (defn question [desc]
@@ -102,3 +104,6 @@
   [_]
   [:correct-answer])
 
+(defmethod validate-answer :abcd
+  [{:keys [count]} answer]
+  (and (int? answer) (<= 0 answer (dec count))))
