@@ -29,6 +29,11 @@
                  (dissoc client-on-client :cnt)))))
     broker'))
 
+(defn update-question [broker id f]
+  (let [question (broker/question broker id)]
+    (process-input broker 0 {:type :input/update-question
+                             :question-id id
+                             :question (f question)})))
 
 (t/deftest updating-questions-test
   (let [broker (process-input (make-broker 1)
@@ -91,10 +96,7 @@
                    (process-input 0 {:type :input/add-question
                                      :desc {:type :abcd :count 4}}))
         [q1 q2] (keys (broker/questions broker))
-        broker (process-input broker 0
-                              {:type :input/update-question
-                               :question-id q1
-                               :question (assoc (broker/question broker q1) :state :active)})]
+        broker (update-question broker q1 #(assoc % :state :active))]
     (t/testing "positive"
       (let [broker' (process-input
                      broker
