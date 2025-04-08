@@ -4,20 +4,18 @@
             [buqt.model.question :as q]
             #?(:clj [clojure.test :as t]
                :cljs [cljs.test :as t :include-macros true])))
+(defn process-action [broker action]
+  (first (broker/process-action broker action)))
 
 (defn make-broker "returns broker, 0 -- organizer, 1.. -- participants"
   [n-participants]
   (reduce
    (fn [broker id]
-     (first
-      (broker/process-action
-       broker
-       {:type :action/add-participant :id id})))
+     (process-action
+      broker
+      {:type :action/add-participant :id id}))
    (broker/init-broker 0)
    (map inc (range n-participants))))
-
-(defn process-action [broker action]
-  (first (broker/process-action broker action)))
 
 (defn process-input [broker id input]
   (let [client (broker/client broker id)
