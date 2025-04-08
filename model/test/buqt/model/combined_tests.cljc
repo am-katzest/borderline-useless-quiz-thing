@@ -78,4 +78,10 @@
                                              :question-id id
                                              :question question'})]
         (t/is (= question' (broker/question broker' id)))
+        (t/is (= (q/censor question') (broker/question-as broker' 1 id))))
+      (let [question' (assoc question :state :revealed)
+            broker' (process-input broker 0 {:type :input/update-question
+                                             :question-id id
+                                             :question question'})]
+        (t/is (= question' (broker/question broker' id)))
         (t/is (= (q/censor question') (broker/question-as broker' 1 id)))))))
