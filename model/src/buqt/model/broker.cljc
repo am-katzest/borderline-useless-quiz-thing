@@ -76,7 +76,12 @@
 (defmethod dispatch-msgs :action/add-participant
   [broker {:keys [id]}]
   [(update broker :clients assoc id (client/make-participant id))
-   [[(organizer-id broker) {:type :update/add-participant :id id}]]])
+   (cons [(organizer-id broker) {:type :update/add-participant :id id}]
+         (for [[question-id question] (questions broker)]
+           [id
+            {:type :update/change-question
+             :id question-id
+             :question (q/censor question)}]))])
 
 (defmethod dispatch-msgs :action/ask-for-reset
   [broker {:keys [id]}]

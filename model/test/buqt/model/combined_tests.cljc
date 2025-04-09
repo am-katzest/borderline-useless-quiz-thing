@@ -121,3 +121,12 @@
           (check-if-action-fails (assoc valid-action :question-id 13)))
         (t/testing "with invalid body"
           (check-if-action-fails (assoc valid-action :answer "meow")))))))
+
+(t/deftest newly-joined-clients-receive-questions
+  (let [broker (-> (make-broker 1)
+                   (process-input 0 {:type :input/add-question
+                                     :desc {:type :abcd :count 3}})
+                   (update-question 1 #(assoc % :state :visible))
+                   (process-action {:type :action/add-participant :id 2}))]
+    (t/is (= (broker/question-as broker 1 1)
+             (broker/question-as broker 2 1)))))
