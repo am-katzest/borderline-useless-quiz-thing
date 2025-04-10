@@ -109,6 +109,12 @@
   {:type :action/add-question
    :desc (:desc input)})
 
+(defmethod input->action :input/remove-question [state {:keys [question-id]}]
+  (u/organizer* state)
+  (u/assert* (get-in state [:questions question-id]) "no such question") 
+  {:type :action/remove-question
+   :question-id question-id})
+
 (defmethod input->action :input/update-question [state {id :question-id question' :question}]
   (u/organizer* state)
   (let [question (get-in state [:questions id])]
@@ -132,6 +138,12 @@
   {:type :update/change-question
    :id (qs/next-question-id (:questions state))
    :question (q/question desc)})
+
+(defmethod action->expected-update :action/remove-question [state {:keys [question-id]}]
+  (u/organizer* state)
+  {:type :update/change-question
+   :id question-id
+   :question nil})
 
 (defmethod action->expected-update :action/update-question [state {:keys [question-id question]}]
   (u/organizer* state)

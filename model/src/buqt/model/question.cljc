@@ -64,10 +64,11 @@
   (reduce dissoc m c))
 
 (defn censor [question]
-  (let [state (:state question)]
-    (cond (participant-can-see-answers? state) question
-          (participant-can-see-question? state) (remove-keys question (secrets question))
-          :else nil)))
+  (when question
+    (let [state (:state question)]
+      (cond (participant-can-see-answers? state) question
+            (participant-can-see-question? state) (remove-keys question (secrets question))
+            :else nil))))
 
 ;; answers
 

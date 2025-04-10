@@ -130,3 +130,18 @@
                    (process-action {:type :action/add-participant :id 2}))]
     (t/is (= (broker/question-as broker 1 1)
              (broker/question-as broker 2 1)))))
+
+(t/deftest question-removal-test
+  (let [broker-after-removal
+        (-> (make-broker 1)
+            (process-input 0 {:type :input/add-question :desc {:type :abcd :count 3}})
+            (update-question 1 #(assoc % :state :visible))
+            (process-input 0 {:type :input/remove-question :question-id 1}))
+        broker-after-adding-another
+        (-> broker-after-removal
+            (process-input 0 {:type :input/add-question :desc {:type :abcd :count 3}}))]
+    (t/testing "tombstone left"
+      (t/is (= nil (get-in broker-after-removal [:clients 0 :questions 1] ::absent)))
+      (t/is (= nil (get-in broker-after-removal [:clients 1 :questions 1] ::absent))))
+    (t/testing "added question does not reuse id"
+      (t/is (not= nil (broker/question broker-after-adding-another 2))))))

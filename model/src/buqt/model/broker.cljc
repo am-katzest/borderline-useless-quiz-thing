@@ -51,6 +51,12 @@
         question (q/question desc)]
     (send-question-updates broker id question)))
 
+(defmethod dispatch-msgs :action/remove-question
+  [broker {:keys [question-id] :as action}]
+  (u/organizer** broker action)
+  (u/assert* (question broker question-id))
+  (send-question-updates broker question-id nil))
+
 (defmethod dispatch-msgs :action/update-question
   [broker {question' :question id :question-id :as action}]
   (u/organizer** broker action)
