@@ -149,3 +149,9 @@
    (utils/store-url-info! {:user-id user-id :quiz-id quiz-id})
    {:db (assoc db :send send! :running true :quiz-id quiz-id)}
    ))
+
+(defn reg-input-event [key f]
+  (re-frame/reg-event-fx
+   key
+   (fn [_ [_ & args]]
+     {:dispatch [::process-input (apply f args)]})))
