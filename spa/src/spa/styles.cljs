@@ -80,6 +80,14 @@
   {:height "100vh"
    :width "100%"})
 
+(defclass add-question-box
+  []
+  {:padding "20px"})
+
+(defclass initial-question-edit-box
+  []
+  {:padding "20px"})
+
 (defclass number-edit
   []
   {:padding "20px"})
