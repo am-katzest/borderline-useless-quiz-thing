@@ -77,6 +77,22 @@
    db/default-db))
 
 (re-frame/reg-event-fx
+ ::apply-update
+ (fn [{:keys [db]} [_ update]]
+   (let [state (:state db)
+         [state' msgs] (c/apply-update-whole state update)]
+     {:db (assoc db :state state')
+      :send-msgs [db msgs]})))
+
+(re-frame/reg-event-fx
+ ::process-input
+ (fn [{:keys [db]} [_ input]]
+   (let [state (:state db)
+         [state' msgs] (c/apply-input-whole state input)]
+     {:db (assoc db :state state')
+      :send-msgs [db msgs]})))
+
+(re-frame/reg-event-fx
  ::start-connection
  (fn [_ [_ user-id quiz-id token]]
    (start-connection user-id quiz-id token)
