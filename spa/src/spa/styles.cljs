@@ -6,22 +6,45 @@
     [garden.units :refer [deg px]]
     [garden.color :refer [rgba]]))
 
-(defcssfn linear-gradient
- ([c1 p1 c2 p2]
-  [[c1 p1] [c2 p2]])
- ([dir c1 p1 c2 p2]
-  [dir [c1 p1] [c2 p2]]))
+(def clr-primary-a0 :#6112a6)
+(def clr-primary-a10 :#521488)
+(def clr-primary-a20 :#42146c)
+(def clr-primary-a30 :#341351)
+(def clr-primary-a40 :#251137)
+(def clr-primary-a50 :#180b1f)
+(def clr-accent-a0 :#12a1a6)
+(def clr-accent-a10 :#1b8488)
+(def clr-accent-a20 :#1d696b)
+(def clr-accent-a30 :#1b4e50)
+(def clr-accent-a40 :#173536)
+(def clr-accent-a50 :#111e1e)
+(def clr-danger-a0 :#b41c2b)
+(def clr-danger-a10 :#851d22)
+(def clr-danger-a20 :#581919)
+(def clr-danger-a30 :#2f1310)
+(def clr-success-a0 :#009f42)
+(def clr-success-a10 :#167533)
+(def clr-success-a20 :#184d25)
+(def clr-success-a30 :#132916)
+(def clr-warning-a0 :#f0ad4e)
+(def clr-warning-a10 :#af7f3c)
+(def clr-warning-a20 :#71532a)
+(def clr-warning-a30 :#392b19)
+(def clr-info-a0 :#388cfa)
+(def clr-info-a10 :#3267b5)
+(def clr-info-a20 :#284475)
+(def clr-info-a30 :#1a253b)
+(def clr-neutral-a0 :#ffffff)
+(def clr-neutral-a10 :#c6c6c6)
+(def clr-neutral-a20 :#919191)
+(def clr-neutral-a30 :#5e5e5e)
+(def clr-neutral-a40 :#303030)
+(def clr-neutral-a50 :#000000)
 
 (defglobal defaults
   [:body
-   {:color               :red
-    :background-color    :#ddd
-    :background-image    [(linear-gradient :white (px 2) :transparent (px 2))
-                          (linear-gradient (deg 90) :white (px 2) :transparent (px 2))
-                          (linear-gradient (rgba 255 255 255 0.3) (px 1) :transparent (px 1))
-                          (linear-gradient (deg 90) (rgba 255 255 255 0.3) (px 1) :transparent (px 1))]
-    :background-size     [[(px 100) (px 100)] [(px 100) (px 100)] [(px 20) (px 20)] [(px 20) (px 20)]]
-    :background-position [[(px -2) (px -2)] [(px -2) (px -2)] [(px -1) (px -1)] [(px -1) (px -1)]]}])
+   {:color               clr-neutral-a0
+    :background-color    clr-neutral-a40}])
 
 (defclass level1
   []
