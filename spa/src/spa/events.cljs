@@ -11,6 +11,13 @@
    [haslett.client :as ws]))
 
 
+(re-frame/reg-fx
+ :send-msgs
+ (fn [[db msgs]]
+   (when-let [send (:send db)]
+    (doseq [msg msgs]
+      (println "sending" msg)
+      (send msg)))))
 
 (def api-root "/api")
 
