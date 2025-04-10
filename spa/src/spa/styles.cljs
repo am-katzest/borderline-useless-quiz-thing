@@ -79,3 +79,7 @@
   []
   {:height "100vh"
    :width "100%"})
+
+(defclass number-edit
+  []
+  {:padding "20px"})
