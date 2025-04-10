@@ -49,3 +49,33 @@
 (defclass level1
   []
   {:color :green})
+
+(defclass organizer-right-panel
+  []
+  {:color :white
+   :background-color clr-primary-a30})
+
+(defclass organizer-url
+  []
+  {:color :white
+   :padding "20px"
+   :background-color clr-primary-a20})
+
+(defclass organizer-users-box
+  []
+  {:color :white
+   :padding "20px"
+   :background-color clr-primary-a10})
+
+(defclass organizer-users-box-user
+  []
+  {:color :white
+   :margin "5px"
+   :padding "5px"
+   :width "100%"
+   :background-color clr-primary-a20})
+
+(defclass organizer-panel
+  []
+  {:height "100vh"
+   :width "100%"})

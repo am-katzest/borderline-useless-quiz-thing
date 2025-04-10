@@ -4,26 +4,34 @@
    [spa.view-utils :refer [sub evt]]
    [spa.organizer.subs :as os]
    [spa.subs :as s]
+   [spa.styles :as style]
    [spa.organizer.events :as oe]))
 
-(defn organizer-top-bar []
-  [re-com/h-box
-   :children
-   [[re-com/label :label [:p "here's a link you can copy: "
-                          [:tt (sub ::s/link)]]]
-    ]])
-
-(defn organizer-user-list []
+(defn url []
   [re-com/v-box
-   :style {:background-color "#ccc"
-           :color "#000"}
+   :class (style/organizer-url)
+   :children
+   [[re-com/label :label [:p "here's a link you can copy: "]]
+    [:tt {:style {:font-size :small}} (sub ::s/link)]]])
+
+(defn user-list []
+  [re-com/v-box
+   :class (style/organizer-users-box)
+   :size "auto"
    :children
    [[re-com/label :label "users:"]
     (for [u (sub ::os/usernames)]
-      [re-com/label :label (str "-" u)])
-    ]])
+      [re-com/label
+       :class (style/organizer-users-box-user)
+       :label (if (and u (not= "" u)) u "[empty]")])]])
 
 (defn organizer-panel []
-  [re-com/v-box
-   :children [[organizer-top-bar]
-              [organizer-user-list]]])
+  [re-com/h-box
+   :class (style/organizer-panel)
+   :children [[re-com/box :size "1" :child "questions placeholder"]
+              [re-com/box :size "4" :child "current question placeholder"]
+              [re-com/v-box
+               :class (style/organizer-right-panel)
+               :size "1"
+               :children [[url]
+                          [user-list]]]]])
