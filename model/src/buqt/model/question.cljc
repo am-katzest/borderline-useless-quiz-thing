@@ -42,9 +42,7 @@
          (validate after))))
 ;; helpers
 
-(def ^:private letters
-  (for [i (range 26)]
-    (str (char (+ (int \A) i)))))
+(def ^:private letters ["A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"])
 
 (defn- all-or-zero [q b]
   (if b (:points q) 0))
