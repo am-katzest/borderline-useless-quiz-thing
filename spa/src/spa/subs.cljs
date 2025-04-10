@@ -28,6 +28,11 @@
    (:running db)))
 
 (re-frame/reg-sub
+ ::adding-question?
+ (fn [db]
+   (:adding-question? db)))
+
+(re-frame/reg-sub
  ::link
  (fn [db]
    (utils/get-url-with-info {:quiz-id (:quiz-id db)})))
