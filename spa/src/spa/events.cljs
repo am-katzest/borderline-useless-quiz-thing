@@ -123,6 +123,11 @@
    ))
 
 (re-frame/reg-event-fx
+ ::error
+ (fn [_ evt]
+   (js/alert (pr-str "error" evt))))
+
+(re-frame/reg-event-fx
  ::connected
  (fn [{db :db} [_ user-id quiz-id send!]]
    (utils/store-url-info! {:user-id user-id :quiz-id quiz-id})
