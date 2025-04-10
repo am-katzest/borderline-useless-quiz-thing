@@ -1,5 +1,8 @@
 (ns buqt.model.broker
-  (:require [buqt.model.client :as client]))
+  (:require [buqt.model.client :as client]
+            [buqt.model.question :as q]
+            [buqt.model.questions :as qs]
+            [buqt.model.utils :as u]))
 ;; broker holds state of each client
 ;; and likely some other internal state as well
 ;; but we'll see about that
@@ -10,23 +13,81 @@
 ;; state contains all the newest client states
 ;; {:clients {13 {} 12 {}} :organizer 12}
 
-(defn- organizer-id [broker] (:organizer broker))
-(defn- organizer [broker] (get (:clients broker) (:organizer broker)))
-(defn- client [broker id] (get-in broker [:clients id]))
+(defn organizer-id [broker] (:organizer broker))
+(defn organizer [broker] (get (:clients broker) (:organizer broker)))
+(defn participant-ids [broker] (remove #{(:organizer broker)} (keys (:clients broker))))
+(defn client [broker id] (get-in broker [:clients id]))
+(defn participants [broker] (map #(client broker %) (participant-ids broker)))
+(defn questions [broker] (:questions (organizer broker)))
+(defn question [broker question-id] ((questions broker) question-id))
+(defn question-as [broker id question-id] ((:questions (client broker id)) question-id))
 
 (defmulti dispatch-msgs (fn [_b action] (:type action)))
 
 (defmethod dispatch-msgs :action/change-username
-  [broker {:keys [id username]}]
+  [broker {:keys [id username] :as action}]
+  (u/participant** broker action)
   (let [msg {:type :update/change-username :id id :username username}]
     [broker
      [[id msg]
       [(organizer-id broker) msg]]]))
 
+(defn send-question-updates [broker id question]
+  (let [msg 
+        {:type :update/change-question
+         :id id
+         :question question}
+        censored-msg (update msg :question q/censor)]
+    [broker
+     (conj
+      (for [pid (participant-ids broker)]
+        [pid censored-msg])
+      [(organizer-id broker) msg])]))
+
+(defmethod dispatch-msgs :action/add-question
+  [broker {:keys [desc] :as action}]
+  (u/organizer** broker action)
+  (let [id (qs/next-question-id (questions broker))
+        question (q/question desc)]
+    (send-question-updates broker id question)))
+
+(defmethod dispatch-msgs :action/remove-question
+  [broker {:keys [question-id] :as action}]
+  (u/organizer** broker action)
+  (u/assert* (question broker question-id))
+  (send-question-updates broker question-id nil))
+
+(defmethod dispatch-msgs :action/update-question
+  [broker {question' :question id :question-id :as action}]
+  (u/organizer** broker action)
+  (let [question ((questions broker) id)]
+    (u/assert* question' "no question with this id")
+    (u/assert* (q/update-valid? question question') "update invalid"))
+  (send-question-updates broker id question'))
+
+(defmethod dispatch-msgs :action/change-answer [broker {:keys [question-id id answer] :as action}]
+  (u/participant** broker action)
+  (let [question (question broker question-id)]
+    (u/assert* question)
+    (u/assert* (q/can-change-answer? question answer))
+    (let [msg
+          {:type :update/change-answer
+           :question-id question-id
+           :participant-id id
+           :answer answer}]
+      [broker
+       [[id msg]
+        [(organizer-id broker) msg]]])))
+
 (defmethod dispatch-msgs :action/add-participant
   [broker {:keys [id]}]
   [(update broker :clients assoc id (client/make-participant id))
-   [[(organizer-id broker) {:type :update/add-participant :id id}]]])
+   (cons [(organizer-id broker) {:type :update/add-participant :id id}]
+         (for [[question-id question] (questions broker)]
+           [id
+            {:type :update/change-question
+             :id question-id
+             :question (q/censor question)}]))])
 
 (defmethod dispatch-msgs :action/ask-for-reset
   [broker {:keys [id]}]

@@ -52,8 +52,23 @@
                 [{:type :action/change-username, :username "mrrrp"}]]
                (sut/apply-input-whole initial-state input)))))))
 
+(t/deftest adding-participant-test
+  (let [added (sut/apply-update (sut/make-organizer 0) {:type :update/add-participant :id 5})]
+    (t/is (= {5 ""} (:id->name added)))
+    (t/is (= {5 {}} (:participant->question->answer added)))))
+
 (t/deftest reset-test
   (t/testing "asking"
     (t/is (= [{:type :action/ask-for-reset :id 5}] (second (sut/apply-update-whole [{:cnt 1 :id 5}] {:type :meow :cnt 5})))))
   (t/testing "applying"
-    (t/is (= [{:meow :mraw}] (first (sut/apply-update-whole [{:cnt 1}] {:type :update/reset :state {:meow :mraw}}))))))
+    (t/is (= [{:meow :mraw}] (first (sut/apply-update-whole [{:cnt 1 :user-type :participant}] {:type :update/reset :state {:meow :mraw}}))))))
+
+(t/deftest question-creation-test
+  (let [organizer (sut/make-organizer 1)
+        input {:type :input/add-question :desc {:type :abcd :count 3}}
+        action (sut/input->action organizer input)
+        update (sut/action->expected-update organizer action)
+        organizer' (sut/apply-update organizer update)]
+    (t/is (= 1 (count (:questions organizer'))))
+    (t/is (= :abcd (:question-type (first (vals (:questions organizer'))))))))
+
