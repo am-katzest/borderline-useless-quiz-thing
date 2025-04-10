@@ -26,9 +26,11 @@
 (def ^:private user-hierarchy
   (-> (make-hierarchy)
       (derive :participant :both)
-      (derive :organizer :both)))
+      (derive :organizer :both)
+      (derive :both :any)
+      (derive :none :any)))
 
-(defmulti apply-update (fn [state msg] [(:user-type state) (:type msg)])
+(defmulti apply-update (fn [state msg] [(or (#{:organizer :participant} (:user-type state)) :none) (:type msg)])
   :hierarchy #'user-hierarchy)
 
 (defmethod apply-update [:participant :update/change-username]
@@ -45,7 +47,7 @@
       (update :id->name assoc id "")
       (update :participant->question->answer assoc id {})))
 
-(defmethod apply-update [:both :update/reset]
+(defmethod apply-update [:any :update/reset]
   [_state {:keys [state]}]
   state)
 
@@ -63,9 +65,9 @@
 ;; when message x0->x1 is received x0 is popped off
 ;; when message x0->y1 is received vector is replaced by [y1]
 
-(defn gui-state "fancy `last`" [state-vector]
+(defn gui-state "selects a state for gui to display" [state-vector]
   (assert* (vector? state-vector))
-  (nth state-vector (dec (count state-vector))))
+  (if (seq state-vector) (nth state-vector (dec (count state-vector))) nil))
 
 (defn restv "rest but preserving type" [v]
   (subvec v 1))

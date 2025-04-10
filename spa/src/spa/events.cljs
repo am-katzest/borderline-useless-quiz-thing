@@ -11,6 +11,13 @@
    [haslett.client :as ws]))
 
 
+(re-frame/reg-fx
+ :send-msgs
+ (fn [[db msgs]]
+   (when-let [send (:send db)]
+    (doseq [msg msgs]
+      (println "sending" msg)
+      (send msg)))))
 
 (def api-root "/api")
 
@@ -70,6 +77,22 @@
    db/default-db))
 
 (re-frame/reg-event-fx
+ ::apply-update
+ (fn [{:keys [db]} [_ update]]
+   (let [state (:state db)
+         [state' msgs] (c/apply-update-whole state update)]
+     {:db (assoc db :state state')
+      :send-msgs [db msgs]})))
+
+(re-frame/reg-event-fx
+ ::process-input
+ (fn [{:keys [db]} [_ input]]
+   (let [state (:state db)
+         [state' msgs] (c/apply-input-whole state input)]
+     {:db (assoc db :state state')
+      :send-msgs [db msgs]})))
+
+(re-frame/reg-event-fx
  ::start-connection
  (fn [_ [_ user-id quiz-id token]]
    (start-connection user-id quiz-id token)
@@ -116,8 +139,19 @@
    ))
 
 (re-frame/reg-event-fx
+ ::error
+ (fn [_ evt]
+   (js/alert (pr-str "error" evt))))
+
+(re-frame/reg-event-fx
  ::connected
  (fn [{db :db} [_ user-id quiz-id send!]]
    (utils/store-url-info! {:user-id user-id :quiz-id quiz-id})
    {:db (assoc db :send send! :running true :quiz-id quiz-id)}
    ))
+
+(defn reg-input-event [key f]
+  (re-frame/reg-event-fx
+   key
+   (fn [_ [_ & args]]
+     {:dispatch [::process-input (apply f args)]})))

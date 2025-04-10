@@ -72,3 +72,7 @@
     (t/is (= 1 (count (:questions organizer'))))
     (t/is (= :abcd (:question-type (first (vals (:questions organizer'))))))))
 
+(t/deftest reset-works-on-invalid-clients
+  (t/is (= participant-a (sut/apply-update nil {:type :update/reset :state participant-a})))
+  (t/is (= participant-a (sut/apply-update {:user-type :meow} {:type :update/reset :state participant-a}))))
+
