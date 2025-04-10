@@ -20,7 +20,8 @@
    :size "auto"
    :children
    [[re-com/label :label "users:"]
-    (for [u (sub ::os/usernames)]
+    (for [[id u] (sub ::os/users+names)]
+      ^{:key id}
       [re-com/label
        :class (style/organizer-users-box-user)
        :label (if (and u (not= "" u)) u "[empty]")])]])
