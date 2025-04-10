@@ -9,7 +9,10 @@
         metosin/reitit {:mvn/version "0.8.0-alpha1"}
         buqt/model {:local/root "../model"}}
  :aliases
- {:test
+ {:run-server
+  {:exec-fn buqt.server.server/run-server
+   :exec-args {:port 8091}} 
+  :test
   {:extra-paths ["test"]
    :extra-deps {io.github.cognitect-labs/test-runner
                 {:git/url "https://github.com/cognitect-labs/test-runner.git"
