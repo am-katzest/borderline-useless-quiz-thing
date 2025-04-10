@@ -61,6 +61,7 @@
    request))
 
 (defn run-server [conf]
+  (log/infof "starting http server at port %d" (:port conf))
   (hk-server/run-server #'app conf))
 
 (comment (def stop-server (run-server {:port 8091})))
