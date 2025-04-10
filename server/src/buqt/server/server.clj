@@ -60,6 +60,7 @@
   ((if (:websocket? request) ws-app http-app)
    request))
 
-(defn run-server [port] (hk-server/run-server #'app {:port port}))
+(defn run-server [conf]
+  (hk-server/run-server #'app conf))
 
-(comment (def stop-server (run-server 8091)))
+(comment (def stop-server (run-server {:port 8091})))
