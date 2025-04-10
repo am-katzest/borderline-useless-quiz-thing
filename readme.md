@@ -42,3 +42,6 @@ npx shadow-cljs watch app
 
 app should be avialable at port `8642`.
 
+## license
+
+AGPLv3 https://www.gnu.org/licenses/agpl-3.0.en.html
