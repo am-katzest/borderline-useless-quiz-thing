@@ -63,9 +63,9 @@
 ;; when message x0->x1 is received x0 is popped off
 ;; when message x0->y1 is received vector is replaced by [y1]
 
-(defn gui-state "fancy `last`" [state-vector]
+(defn gui-state "selects a state for gui to display" [state-vector]
   (assert* (vector? state-vector))
-  (nth state-vector (dec (count state-vector))))
+  (if (seq state-vector) (nth state-vector (dec (count state-vector))) nil))
 
 (defn restv "rest but preserving type" [v]
   (subvec v 1))
