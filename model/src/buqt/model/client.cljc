@@ -26,9 +26,11 @@
 (def ^:private user-hierarchy
   (-> (make-hierarchy)
       (derive :participant :both)
-      (derive :organizer :both)))
+      (derive :organizer :both)
+      (derive :both :any)
+      (derive :none :any)))
 
-(defmulti apply-update (fn [state msg] [(:user-type state) (:type msg)])
+(defmulti apply-update (fn [state msg] [(or (#{:organizer :participant} (:user-type state)) :none) (:type msg)])
   :hierarchy #'user-hierarchy)
 
 (defmethod apply-update [:participant :update/change-username]
@@ -45,7 +47,7 @@
       (update :id->name assoc id "")
       (update :participant->question->answer assoc id {})))
 
-(defmethod apply-update [:both :update/reset]
+(defmethod apply-update [:any :update/reset]
   [_state {:keys [state]}]
   state)
 
