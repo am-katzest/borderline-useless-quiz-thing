@@ -119,6 +119,12 @@
    :background-color clr-primary-a40
    :width "100%"})
 
+(defclass abcd-question-btn
+  [correct?]
+  {:background-color (if correct? clr-success-a20 clr-danger-a20)}
+  [:&:hover {:background-color clr-success-a10
+             :color :white}])
+
 (defclass fancy-input
   []
   {:background-color "#333"

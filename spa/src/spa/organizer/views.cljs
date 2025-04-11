@@ -64,6 +64,28 @@
          (when (validate coerced)
            (action (assoc-in body path coerced)))))]))
 
+(defmulti edit-question-type-specific (fn [question val-set]
+                                         (:question-type question)))
+
+(def letters ["A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"])
+
+(defmethod edit-question-type-specific
+  :abcd
+  [question val-set]
+  [:<>
+   [re-com/label :label "possible answers:"]
+   [re-com/gap :size "10px"]
+   (for [[letter i] (map vector letters (range (:count question)))]
+     [re-com/h-box
+      :align :center
+      :padding "5px"
+      :gap "20px"
+      :children [[re-com/button
+                  :class (style/abcd-question-btn (= i (:correct-answer question)))
+                  :label letter
+                  :on-click #((second (val-set [:correct-answer])) i)]
+                 [fancy-input "" (val-set [:possible-answers i]) "400px" ]]])])
+
 (defn question-edit []
   (let [question (sub ::s/selected-question)
         id (sub ::s/selected-question-id)
@@ -90,7 +112,8 @@
                                                  :coerce parse-double
                                                  :validate #(not (neg? %))
                                                  ) "50px" :blur? true]]]
-                [question-state-edit (val-set [:state])]]]))
+                [question-state-edit (val-set [:state])]
+                [edit-question-type-specific question val-set]]]))
 
 (defn display-question []
   (if (sub ::s/selected-question)
