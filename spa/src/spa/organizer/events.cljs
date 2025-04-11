@@ -10,6 +10,13 @@
     {:type :input/add-question
      :desc (assoc desc :type type)}]))
 
+(reg-input-event+db
+ ::clicked-delete-question
+ (fn [db id]
+   [(assoc db :current-question nil)
+    {:type :input/remove-question
+     :question-id id}]))
+
 (re-frame/reg-event-db
  ::show-add-question-ui
  (fn [db _]
