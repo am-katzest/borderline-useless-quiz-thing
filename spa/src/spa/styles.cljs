@@ -118,3 +118,10 @@
   {:padding "20px"
    :background-color clr-primary-a40
    :width "100%"})
+
+(defclass fancy-input
+  []
+  {:background-color "#333"
+   :border-width "1px"
+   :border-color :black
+   :color "white"})

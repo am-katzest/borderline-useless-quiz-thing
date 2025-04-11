@@ -34,9 +34,8 @@
    :width width
    :children [[re-com/label :label label]
               [re-com/input-text
-               :style {:width width
-                       :background-color "#333"
-                       :color "white"}
+               :class (style/fancy-input)
+               :style {:width width}
                :model val
                :change-on-blur? blur?
                :on-change set]]])
