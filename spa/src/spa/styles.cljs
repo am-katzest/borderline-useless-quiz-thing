@@ -105,7 +105,8 @@
 
 (defclass questions-list
   []
-  {:padding "20px"})
+  {:background-color clr-primary-a10
+   :padding "20px"})
 
 (defclass questions-list-item
   [selected]
