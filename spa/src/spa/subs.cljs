@@ -42,5 +42,4 @@
  :<- [::gui-state]
  (fn [state]
    ;; drops hidden and deleted questions
-   (println state)
    (filter second (:questions state))))
