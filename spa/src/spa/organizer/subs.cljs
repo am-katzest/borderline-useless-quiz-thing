@@ -4,7 +4,7 @@
    [spa.subs :as base]))
 
 (re-frame/reg-sub
- ::usernames
+ ::users+names
  :<- [::base/gui-state]
  (fn [state]
-   (vals (:id->name state))))
+   (seq (:id->name state))))
