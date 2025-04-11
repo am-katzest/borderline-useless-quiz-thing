@@ -155,3 +155,8 @@
    key
    (fn [_ [_ & args]]
      {:dispatch [::process-input (apply f args)]})))
+
+(re-frame/reg-event-db
+ ::clicked-question-on-list
+ (fn [db [_ id]]
+   (assoc db :current-question id :adding-question? false)))

@@ -36,3 +36,11 @@
  ::link
  (fn [db]
    (utils/get-url-with-info {:quiz-id (:quiz-id db)})))
+
+(re-frame/reg-sub
+ ::questions
+ :<- [::gui-state]
+ (fn [state]
+   ;; drops hidden and deleted questions
+   (println state)
+   (filter second (:questions state))))
