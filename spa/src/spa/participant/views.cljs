@@ -4,18 +4,15 @@
    [spa.view-utils :refer [sub evt]]
    [spa.participant.subs :as ps]
    [spa.shared-views :as shared-views]
+   [spa.ui-elements :as els]
    [spa.styles :as styles]
    [spa.participant.events :as pe]))
 
 (defn username-edit-panel []
-  [re-com/h-box
-   :children
-   [[re-com/label :label "chaneg usernam!"]
-    [re-com/input-text
-     :model (sub ::ps/username)
-     :change-on-blur? false
-     :on-change #(evt [::pe/changed-username %])]
-    ]])
+  (let [val-set ((els/make-val-set {:username (sub ::ps/username)}
+                                   #(evt [::pe/changed-username (:username %)]))
+                 [:username])]
+    [els/fancy-input "username" val-set "200px"]))
 
 (defn participant-panel []
   [re-com/h-box
