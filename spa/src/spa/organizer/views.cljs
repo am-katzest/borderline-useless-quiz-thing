@@ -75,7 +75,11 @@
      :children [[re-com/h-box
                  :justify :between
                  :children [[re-com/label :label "edit question!"]
-                            [re-com/button :label "delete" :on-click #(evt [::oe/clicked-delete-question id])]]]
+                            [re-com/button
+                             :style {:background-color style/clr-danger-a10
+                                     :border :none
+                                     :color :white}
+                             :label "delete" :on-click #(evt [::oe/clicked-delete-question id])]]]
                 [re-com/h-box
                  :width "100%"
                  :gap "20px"
@@ -132,7 +136,11 @@
    :justify :between
    :align :center
    :children [[re-com/label :style {:width "20px"} :label "questions:"]
-              [re-com/button :label "+" :on-click #(evt ::oe/show-add-question-ui)]]])
+              [re-com/button :style {:background-color style/clr-primary-a40
+                                     :border :none
+                                     :color :white}
+               :label "add new"
+               :on-click #(evt ::oe/show-add-question-ui)]]])
 
 (defn questions-box []
   [re-com/v-box
