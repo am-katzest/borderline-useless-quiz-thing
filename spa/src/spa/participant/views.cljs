@@ -22,5 +22,9 @@
                :class (styles/questions-box)
                :children [[shared-views/questions-list]]]
               [re-com/box
-               :size "5"
-               :child "meow" ]]])
+               :size "4"
+               :child "meow" ]
+              [re-com/v-box
+               :size "1"
+               :class (styles/participant-right-panel)
+               :children [[username-edit-panel]]]]])

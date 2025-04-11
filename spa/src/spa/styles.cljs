@@ -55,6 +55,12 @@
   {:color :white
    :background-color clr-primary-a30})
 
+(defclass participant-right-panel
+  []
+  {:color :white
+   :padding "20px"
+   :background-color clr-primary-a30})
+
 (defclass organizer-url
   []
   {:color :white
