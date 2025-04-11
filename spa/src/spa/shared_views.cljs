@@ -10,7 +10,7 @@
 (defn question-list-item [id question]
   ^{:key id}
   [:div {:on-click #(evt [::events/clicked-question-on-list id])
-         :class (style/questions-list-item)}
+         :class (style/questions-list-item (= id (sub ::s/selected-question-id)))}
    [re-com/h-box
     :align :center
     :children

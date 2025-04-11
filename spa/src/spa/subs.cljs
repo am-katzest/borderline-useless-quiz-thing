@@ -43,3 +43,8 @@
  (fn [state]
    ;; drops hidden and deleted questions
    (filter second (:questions state))))
+
+(re-frame/reg-sub
+ ::selected-question-id
+ (fn [db]
+   (:current-question db)))

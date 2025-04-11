@@ -108,7 +108,7 @@
   {:padding "20px"})
 
 (defclass questions-list-item
-  []
-  {:background-color clr-primary-a20
+  [selected]
+  {:background-color (if selected clr-primary-a30 clr-primary-a20)
    :padding "5px"}
   [:&:hover {:background-color clr-primary-a30}])
