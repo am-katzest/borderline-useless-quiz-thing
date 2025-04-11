@@ -80,6 +80,11 @@
   {:height "100vh"
    :width "100%"})
 
+(defclass participant-panel
+  []
+  {:height "100vh"
+   :width "100%"})
+
 (defclass add-question-box
   []
   {:padding "20px"})
