@@ -115,4 +115,6 @@
 
 (defclass question-edit
   []
-  {:padding "20px"})
+  {:padding "20px"
+   :background-color clr-primary-a40
+   :width "100%"})
