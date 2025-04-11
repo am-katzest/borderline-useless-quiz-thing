@@ -29,18 +29,6 @@
        :class (style/organizer-users-box-user)
        :label (if (and u (not= "" u)) u "[empty]")])]])
 
-(defn fancy-input [label [val set] width & {:keys [blur?] :or {blur? false}}]
-  [re-com/v-box
-   :width width
-   :children [[re-com/label :label label]
-              [re-com/input-text
-               :class (style/fancy-input)
-               :style {:width width}
-               :model val
-               :change-on-blur? blur?
-               :on-change set]]])
-
-
 (defn question-state-edit [[value set]]
   [re-com/v-box
    :children [[re-com/label :label "set question state"]
@@ -52,17 +40,6 @@
                       {:id :active :label "active"}
                       {:id :stopped :label "stopped"}
                       {:id :revealed :label "revealed"}]]]])
-
-(defn make-val-set [body action]
-  (fn [path & {:keys [validate coerce display]
-              :or {display identity
-                   coerce identity
-                   validate (constantly true)}}]
-    [(display (get-in body path))
-     (fn [val]
-       (let [coerced (coerce val)]
-         (when (validate coerced)
-           (action (assoc-in body path coerced)))))]))
 
 (defmulti edit-question-type-specific (fn [question val-set]
                                          (:question-type question)))
@@ -84,12 +61,12 @@
                   :class (style/abcd-question-btn (= i (:correct-answer question)))
                   :label letter
                   :on-click #((second (val-set [:correct-answer])) i)]
-                 [fancy-input "" (val-set [:possible-answers i]) "400px" ]]])])
+                 [els/fancy-input "" (val-set [:possible-answers i]) "400px" ]]])])
 
 (defn question-edit []
   (let [question (sub ::s/selected-question)
         id (sub ::s/selected-question-id)
-        val-set (make-val-set question #(evt [::oe/question-updated id %]))]
+        val-set (els/make-val-set question #(evt [::oe/question-updated id %]))]
     [re-com/v-box
      :gap "20px"
      :class (style/question-edit)
@@ -106,8 +83,8 @@
                  :gap "20px"
                  :align :end
                  :children
-                 [[fancy-input "description" (val-set [:description]) "400px"]
-                  [fancy-input "points" (val-set [:points]
+                 [[els/fancy-input "description" (val-set [:description]) "400px"]
+                  [els/fancy-input "points" (val-set [:points]
                                                  :display str
                                                  :coerce parse-double
                                                  :validate #(not (neg? %))
