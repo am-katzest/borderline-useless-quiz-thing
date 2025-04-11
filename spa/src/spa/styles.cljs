@@ -91,6 +91,18 @@
 (defclass number-edit
   []
   {:padding "20px"})
+
+(defclass questions-box
+  []
+  {:width "100%"
+   :background-color clr-primary-a10})
+
+(defclass questions-header
+  []
+  {:padding "10px"
+   :min-height "60px"
+   :background-color clr-primary-a20})
+
 (defclass questions-list
   []
   {:padding "20px"})

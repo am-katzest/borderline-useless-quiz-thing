@@ -6,6 +6,7 @@
    [reagent.core :as r]
    [spa.subs :as s]
    [spa.styles :as style]
+   [spa.shared-views :as shared-views]
    [spa.ui-elements :as els]
    [spa.organizer.events :as oe]))
 
@@ -62,10 +63,25 @@
                      [re-com/button :label "add question!" :on-click #(evt [::oe/add-question @question-type @question-state])]]]
                    [re-com/box :class (style/initial-question-edit-box) :child [initial-question-edit @question-type question-state]]]])]))
 
+
+(defn questions-header []
+  [re-com/h-box
+   :class (style/questions-header)
+   :justify :between
+   :align :center
+   :children [[re-com/label :style {:width "20px"} :label "questions:"]
+              [re-com/button :label "+" :on-click #(evt ::oe/show-add-question-ui)]]])
+
+(defn questions-box []
+  [re-com/v-box
+   :class (style/questions-box)
+   :children [[questions-header]
+              [shared-views/questions-list]]])
+
 (defn organizer-panel []
   [re-com/h-box
    :class (style/organizer-panel)
-   :children [[re-com/box :size "1" :child "questions placeholder"]
+   :children [[re-com/box :size "1" :child [questions-box]]
               [re-com/box
                :size "4"
                :child (if (sub ::s/adding-question?)

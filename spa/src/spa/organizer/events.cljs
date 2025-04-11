@@ -9,3 +9,8 @@
    {:db (assoc db :adding-question? false)
     :dispatch [::e/process-input {:type :input/add-question
                                   :desc (assoc desc :type type)}]}))
+
+(re-frame/reg-event-db
+ ::show-add-question-ui
+ (fn [db _]
+   (assoc db :adding-question? true)))
