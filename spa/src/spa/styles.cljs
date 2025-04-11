@@ -112,3 +112,7 @@
   {:background-color (if selected clr-primary-a30 clr-primary-a20)
    :padding "5px"}
   [:&:hover {:background-color clr-primary-a30}])
+
+(defclass question-edit
+  []
+  {:padding "20px"})

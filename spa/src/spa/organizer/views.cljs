@@ -29,8 +29,68 @@
        :class (style/organizer-users-box-user)
        :label (if (and u (not= "" u)) u "[empty]")])]])
 
+(defn fancy-input [label [val set] width & {:keys [blur?] :or {blur? false}}]
+  [re-com/v-box
+   :width width
+   :children [[re-com/label :label label]
+              [re-com/input-text
+               :style {:width width}
+               :model val
+               :change-on-blur? blur?
+               :on-change set]]])
+
+
+(defn question-state-edit [[value set]]
+  [re-com/v-box
+   :children [[re-com/label :label "set question state"]
+              [re-com/horizontal-pill-tabs
+               :model value
+               :on-change set
+               :tabs [{:id :hidden :label "hidden"}
+                      {:id :visible :label "visible"}
+                      {:id :active :label "active"}
+                      {:id :stopped :label "stopped"}
+                      {:id :revealed :label "revealed"}]]]])
+
+(defn make-val-set [body action]
+  (fn [path & {:keys [validate coerce display]
+              :or {display identity
+                   coerce identity
+                   validate (constantly true)}}]
+    [(display (get-in body path))
+     (fn [val]
+       (let [coerced (coerce val)]
+         (when (validate coerced)
+           (action (assoc-in body path coerced)))))]))
+
+(defn question-edit []
+  (let [question (sub ::s/selected-question)
+        id (sub ::s/selected-question-id)
+        val-set (make-val-set question #(evt [::oe/question-updated id %]))]
+    [re-com/v-box
+     :gap "20px"
+     :class (style/question-edit)
+     :children [[re-com/h-box
+                 :justify :between
+                 :children [[re-com/label :label "edit question!"]
+                            [re-com/button :label "delete" :on-click #(evt [::oe/clicked-delete-question id])]]]
+                [re-com/h-box
+                 :width "100%"
+                 :gap "20px"
+                 :align :end
+                 :children
+                 [[fancy-input "description" (val-set [:description]) "400px"]
+                  [fancy-input "points" (val-set [:points]
+                                                 :display str
+                                                 :coerce parse-double
+                                                 :validate #(not (neg? %))
+                                                 ) "50px" :blur? true]]]
+                [question-state-edit (val-set [:state])]]]))
+
 (defn display-question []
-  "display question placeholder")
+  (if (sub ::s/selected-question)
+    [question-edit]
+    "no question selected"))
 
 (defmulti initial-question-edit (fn [type _] type))
 (defmulti initial-question-type-state identity)

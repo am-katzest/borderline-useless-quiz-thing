@@ -48,3 +48,11 @@
  ::selected-question-id
  (fn [db]
    (:current-question db)))
+
+(re-frame/reg-sub
+ ::selected-question
+ :<- [::gui-state]
+ :<- [::selected-question-id]
+ (fn [[state qid]]
+   (println state qid)
+   (get-in state [:questions qid])))
