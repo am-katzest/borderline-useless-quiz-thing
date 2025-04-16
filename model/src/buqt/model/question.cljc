@@ -10,6 +10,9 @@
 
 (defmulti grade "(question, answer) -> points" question-type)
 
+(defmethod grade nil
+  [_ _] 0)
+
 (defmulti invariants "returns keys which cannot be changed" question-type)
 
 (defmulti validate question-type)
