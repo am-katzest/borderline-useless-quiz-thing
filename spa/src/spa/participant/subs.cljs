@@ -23,5 +23,5 @@
  :<- [::own-answer-to-selected-question]
  (fn [question answer]
    (when (q/participant-can-see-answers?
-        (:state question)
-        (q/grade question answer)))))
+          (:state question))
+     (q/grade question answer))))
