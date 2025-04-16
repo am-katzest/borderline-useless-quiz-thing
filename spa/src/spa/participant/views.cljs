@@ -14,6 +14,14 @@
                  [:username])]
     [els/fancy-input "username" val-set "200px"]))
 
+(defn points-box []
+  [re-com/h-box :class (styles/points-box)
+         :gap "5px"
+         :children
+         [[re-com/label :label "points:"]
+          [re-com/label :style {:min-width "1.5em" :text-align "right"} :label "3"]
+          [re-com/label :label "/"]
+          [re-com/label :style {:min-width "1.5em"} :label "4"]]])
 (defn participant-panel []
   [re-com/h-box
    :class (styles/participant-panel)

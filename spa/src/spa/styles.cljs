@@ -143,3 +143,8 @@
    :border-width "1px"
    :border-color :black
    :color "white"})
+(defclass points-box
+  []
+  {:padding "10px"
+   :padding-right "5px"
+   :background-color clr-primary-a20})
