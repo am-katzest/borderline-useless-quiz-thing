@@ -19,9 +19,9 @@
          :gap "5px"
          :children
          [[re-com/label :label "points:"]
-          [re-com/label :style {:min-width "1.5em" :text-align "right"} :label "3"]
+          [re-com/label :style {:min-width "1.5em" :text-align "right"} :label (or (sub ::ps/selected-question-points) "")]
           [re-com/label :label "/"]
-          [re-com/label :style {:min-width "1.5em"} :label "4"]]])
+          [re-com/label :style {:min-width "1.5em"} :label (:points (sub ::s/selected-question))]]])
 (defn participant-panel []
   [re-com/h-box
    :class (styles/participant-panel)
