@@ -22,6 +22,15 @@
           [re-com/label :style {:min-width "1.5em" :text-align "right"} :label (or (sub ::ps/selected-question-points) "")]
           [re-com/label :label "/"]
           [re-com/label :style {:min-width "1.5em"} :label (:points (sub ::s/selected-question))]]])
+
+(defn question-state [state]
+  (let [label (get {:active "answer question"
+                    :visible "you can't answer yet"
+                    :hidden "you can't answer anymore"
+                    :revealed "answer revealed"}
+                   state
+                   "uh oh")]
+    [re-com/label :label label]))
 (defn participant-panel []
   [re-com/h-box
    :class (styles/participant-panel)
