@@ -26,7 +26,7 @@
 (defn question-state [state]
   (let [label (get {:active "answer question"
                     :visible "you can't answer yet"
-                    :hidden "you can't answer anymore"
+                    :stopped "you can't answer anymore"
                     :revealed "answer revealed"}
                    state
                    "uh oh")]
