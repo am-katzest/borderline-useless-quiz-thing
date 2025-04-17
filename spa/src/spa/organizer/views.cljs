@@ -25,9 +25,14 @@
    [[re-com/label :label "users:"]
     (for [[id u] (sub ::os/users+names)]
       ^{:key id}
-      [re-com/label
+      [re-com/h-box
        :class (style/organizer-users-box-user)
-       :label (if (and u (not= "" u)) u "[empty]")])]])
+       :children
+       [[re-com/label
+         :width "3em"
+         :label (sub [::os/user-points id])]
+        [re-com/label
+         :label (if (and u (not= "" u)) u "[empty]")]]])]])
 
 (defn fancy-input [label [val set] width & {:keys [blur?] :or {blur? false}}]
   [re-com/v-box
