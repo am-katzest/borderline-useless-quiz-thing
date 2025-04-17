@@ -22,7 +22,8 @@
    :class (style/organizer-users-box)
    :size "auto"
    :children
-   [[re-com/label :label "users:"]
+   [[re-com/label :label (str "max points: " (sub ::os/max-points))]
+    [re-com/box :child [re-com/label :label "users:"]]
     (for [[id u] (sub ::os/users+names)]
       ^{:key id}
       [re-com/h-box

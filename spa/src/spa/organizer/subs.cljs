@@ -17,3 +17,9 @@
    (qs/tally-points-for-answers-organizer
     (:questions state)
     (get-in state [:participant->question->answer id]))))
+
+(re-frame/reg-sub
+ ::max-points
+ :<- [::base/id->question]
+ (fn [id->question]
+   (qs/max-points id->question)))
