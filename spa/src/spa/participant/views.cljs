@@ -6,6 +6,7 @@
    [spa.shared-views :as shared-views]
    [spa.ui-elements :as els]
    [spa.styles :as styles]
+   [spa.subs :as s]
    [spa.participant.events :as pe]))
 
 (defn username-edit-panel []
@@ -31,6 +32,28 @@
                    state
                    "uh oh")]
     [re-com/label :label label]))
+
+(defmulti question-edit (fn [question change-answer!] (:question-type question)))
+
+(defn question-panel []
+  (let [question (sub ::s/selected-question)
+        question-id (sub ::s/selected-question-id)]
+    [re-com/v-box
+     :class (styles/question-participant)
+     :gap "10px"
+     :children
+     [[re-com/label
+       :class (styles/question-description)
+       :label (:description question)]
+      [re-com/h-box
+       :gap "20px"
+       :align :center
+       :children
+       [[points-box]
+        [question-state (:state question)]]]
+      [question-edit question #(evt [::pe/change-answer question-id %])]]]))
+
+
 (defn participant-panel []
   [re-com/h-box
    :class (styles/participant-panel)
@@ -40,7 +63,9 @@
                :children [[shared-views/questions-list]]]
               [re-com/box
                :size "4"
-               :child "meow" ]
+               :child (if (sub ::s/selected-question)
+                        [question-panel]
+                        "question not selected")]
               [re-com/v-box
                :size "1"
                :class (styles/participant-right-panel)

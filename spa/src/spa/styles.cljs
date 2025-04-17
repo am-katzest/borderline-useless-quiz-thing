@@ -131,6 +131,12 @@
    :background-color clr-primary-a40
    :width "100%"})
 
+(defclass question-participant
+  []
+  {:padding "20px"
+   :background-color clr-primary-a40
+   :width "100%"})
+
 (defclass abcd-question-btn
   [correct?]
   {:background-color (if correct? clr-success-a20 clr-danger-a20)}
@@ -143,6 +149,13 @@
    :border-width "1px"
    :border-color :black
    :color "white"})
+
+(defclass question-description
+  []
+  {:padding "10px"
+   :width "100%"
+   :background-color clr-primary-a20})
+
 (defclass points-box
   []
   {:padding "10px"
