@@ -71,6 +71,8 @@
   []
   {:color :white
    :padding "20px"
+   :padding-left "5px"
+   :padding-right "10px"
    :background-color clr-primary-a10})
 
 (defclass organizer-users-box-user
