@@ -10,6 +10,9 @@
 
 (defmulti grade "(question, answer) -> points" question-type)
 
+(defmethod grade nil
+  [_ _] 0)
+
 (defmulti invariants "returns keys which cannot be changed" question-type)
 
 (defmulti validate question-type)
@@ -42,7 +45,7 @@
          (validate after))))
 ;; helpers
 
-(def ^:private letters ["A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"])
+(def letters ["A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"])
 
 (defn- all-or-zero [q b]
   (if b (:points q) 0))

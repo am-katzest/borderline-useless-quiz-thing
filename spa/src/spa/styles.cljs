@@ -55,6 +55,12 @@
   {:color :white
    :background-color clr-primary-a30})
 
+(defclass participant-right-panel
+  []
+  {:color :white
+   :padding "20px"
+   :background-color clr-primary-a30})
+
 (defclass organizer-url
   []
   {:color :white
@@ -78,6 +84,11 @@
    :background-color clr-primary-a20})
 
 (defclass organizer-panel
+  []
+  {:height "100vh"
+   :width "100%"})
+
+(defclass participant-panel
   []
   {:height "100vh"
    :width "100%"})
@@ -107,7 +118,8 @@
 
 (defclass questions-list
   []
-  {:padding "20px"})
+  {:background-color clr-primary-a10
+   :padding "20px"})
 
 (defclass questions-list-item
   [selected]
@@ -121,11 +133,30 @@
    :background-color clr-primary-a40
    :width "100%"})
 
+(defclass question-participant
+  []
+  {:padding "20px"
+   :background-color clr-primary-a40
+   :width "100%"})
+
 (defclass abcd-question-btn
   [correct?]
   {:background-color (if correct? clr-success-a20 clr-danger-a20)}
   [:&:hover {:background-color clr-success-a10
              :color :white}])
+
+(defclass abcd-question-answer-btn
+  [selected? correct? known? editable?]
+  {:background-color (cond editable? (if selected? clr-neutral-a10 clr-neutral-a30)
+                           known? (case [selected? correct?]
+                                    [true true] clr-success-a10
+                                    [true false] clr-danger-a10
+                                    [false true] clr-success-a30
+                                    [false false] clr-danger-a30)
+                           :else (if selected? clr-neutral-a20 clr-neutral-a40))}
+  [:&:hover (when editable?
+              {:background-color clr-neutral-a10
+               :color :white})])
 
 (defclass fancy-input
   []
@@ -133,3 +164,15 @@
    :border-width "1px"
    :border-color :black
    :color "white"})
+
+(defclass question-description
+  []
+  {:padding "10px"
+   :width "100%"
+   :background-color clr-primary-a20})
+
+(defclass points-box
+  []
+  {:padding "10px"
+   :padding-right "5px"
+   :background-color clr-primary-a20})
