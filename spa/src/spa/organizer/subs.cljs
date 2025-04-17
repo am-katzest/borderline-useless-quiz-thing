@@ -34,3 +34,11 @@
  :<- [::base/id->question]
  (fn [id->question]
    (qs/max-points id->question)))
+
+(re-frame/reg-sub
+ ::participant-answer-for-selected-question
+ (fn [[_ id]]
+   [(re-frame/subscribe [::base/selected-question-id])
+    (re-frame/subscribe [::participant-answers id])])
+ (fn [[question-id question-id->answer]]
+   (question-id->answer question-id)))

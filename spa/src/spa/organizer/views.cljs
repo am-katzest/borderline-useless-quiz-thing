@@ -90,7 +90,13 @@
                   :class (style/abcd-question-btn (= i (:correct-answer question)))
                   :label letter
                   :on-click #((second (val-set [:correct-answer])) i)]
-                 [fancy-input "" (val-set [:possible-answers i]) "400px" ]]])])
+                 [fancy-input "" (val-set [:possible-answers i]) "400px" ]]])
+   [re-com/gap :size "10px"]
+   [re-com/label :label "participant answers:"]
+   [re-com/gap :size "10px"]
+   (doall (for [[id username] (sub ::os/users+names)
+                :let [answer (sub [::os/participant-answer-for-selected-question id])]]
+            [re-com/h-box :class (style/organizer-users-box-user) :gap "5px" :children [username  ":" (letters answer)]]))])
 
 (defn question-edit []
   (let [question (sub ::s/selected-question)
