@@ -25,16 +25,16 @@
    :children
    [[re-com/label :label (str "max points: " (sub ::os/max-points))]
     [re-com/box :child [re-com/label :label "users:"]]
-    (for [[id u] (sub ::os/users+names)]
-      ^{:key id}
-      [re-com/h-box
-       :class (style/organizer-users-box-user)
-       :children
-       [[re-com/label
-         :width "3em"
-         :label (sub [::os/participant-points id])]
-        [re-com/label
-         :label (if (and u (not= "" u)) u "[empty]")]]])]])
+    (doall (for [[id u] (sub ::os/users+names)]
+       ^{:key id}
+       [re-com/h-box
+        :class (style/organizer-users-box-user)
+        :children
+        [[re-com/label
+          :width "3em"
+          :label (sub [::os/participant-points id])]
+         [re-com/label
+          :label (if (and u (not= "" u)) u "[empty]")]]]))]])
 
 (defn question-state-edit [[value set]]
   [re-com/v-box
