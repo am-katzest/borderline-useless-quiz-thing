@@ -68,5 +68,18 @@
     (t/is (= false (sut/can-change-answer? q 3)))
     (t/is (= true (sut/can-change-answer? q-changeable nil)))
     (t/is (= false (sut/can-change-answer? q nil)))))
-
-
+(t/deftest text-type-test
+  (let [q1 (sut/question {:type :text})
+        q2 (assoc q1 :answer->fraction {"meow" 1
+                                        "mraw" 0.5}
+                  :points 2)]
+    (t/testing "validation"
+      (t/testing "positive" (t/is (= true (sut/validate q1)))
+                 (t/is (= true (sut/validate q2))))
+      (t/testing "negative"
+        (t/is (= false (sut/validate (assoc q1 :answer->fraction {"meow" 5}))))
+        (t/is (= false (sut/validate (assoc q1 :answer->fraction {"meow" -1}))))))
+    (t/testing "grading"
+      (t/is (== 0 (sut/grade q1 "meow")))
+      (t/is (== 2 (sut/grade q2 "meow")))
+      (t/is (== 1 (sut/grade q2 "mraw"))))))

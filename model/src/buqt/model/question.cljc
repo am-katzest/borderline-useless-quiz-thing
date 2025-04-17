@@ -116,3 +116,34 @@
 (defmethod validate-answer :abcd
   [{:keys [count]} answer]
   (and (int? answer) (<= 0 answer (dec count))))
+
+;; text
+(defmethod initialize :text
+  [base _]
+  (assoc base
+         :answer->fraction {}))
+
+(defmethod grade :text
+  [question answer]
+  (* (:points question)
+     (get-in question [:answer->fraction answer] 0)))
+
+(defmethod invariants :text
+  [_]
+  [])
+
+(s/defschema text-question
+  (into base-question
+        {:answer->fraction {s/Str (s/constrained s/Num #(>= 1 % 0))}}))
+
+(defmethod validate :text
+  [question]
+  (not (s/check text-question question)))
+
+(defmethod secrets :text
+  [_]
+  [:answer->fraction])
+
+(defmethod validate-answer :text
+  [_ answer]
+  (string? answer))
