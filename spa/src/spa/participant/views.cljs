@@ -88,7 +88,9 @@
 
 (defn total-points-box []
   (let [{min-points :min  max-points :max} (sub ::ps/points)]
-    [display-points-box [min-points max-points] "-" "2.5em"]))
+    (if (not= min-points max-points)
+      [display-points-box [min-points max-points] "-" "2.5em"]
+      [display-points-box [min-points nil] "" "2.5em"])))
 
 (defn participant-panel []
   [re-com/h-box
