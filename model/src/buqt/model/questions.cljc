@@ -10,3 +10,6 @@
 (defn update-valid? [questions id replacement]
   (let [existing (questions id)]
     (q/update-valid? existing replacement)))
+
+(defn max-points [id->question]
+  (->> id->question vals (keep :points) (reduce + 0)))
