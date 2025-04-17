@@ -7,6 +7,7 @@
    [spa.subs :as s]
    [spa.styles :as style]
    [spa.shared-views :as shared-views]
+   [buqt.model.question :as q]
    [spa.ui-elements :as els]
    [spa.organizer.events :as oe]))
 
@@ -42,9 +43,7 @@
                       {:id :revealed :label "revealed"}]]]])
 
 (defmulti edit-question-type-specific (fn [question val-set]
-                                         (:question-type question)))
-
-(def letters ["A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"])
+                                        (:question-type question)))
 
 (defmethod edit-question-type-specific
   :abcd
@@ -52,7 +51,7 @@
   [:<>
    [re-com/label :label "possible answers:"]
    [re-com/gap :size "10px"]
-   (for [[letter i] (map vector letters (range (:count question)))]
+   (for [[letter i] (map vector q/letters (range (:count question)))]
      [re-com/h-box
       :align :center
       :padding "5px"
