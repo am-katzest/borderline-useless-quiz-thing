@@ -51,16 +51,17 @@
   [:<>
    [re-com/label :label "possible answers:"]
    [re-com/gap :size "10px"]
-   (for [[letter i] (map vector q/letters (range (:count question)))]
-     [re-com/h-box
-      :align :center
-      :padding "5px"
-      :gap "20px"
-      :children [[re-com/button
-                  :class (style/abcd-question-btn (= i (:correct-answer question)))
-                  :label letter
-                  :on-click #((second (val-set [:correct-answer])) i)]
-                 [els/fancy-input "" (val-set [:possible-answers i]) "400px" ]]])])
+   (doall (for [[letter i] (map vector q/letters (range (:count question)))]
+            ^{:key i}
+            [re-com/h-box
+             :align :center
+             :padding "5px"
+             :gap "20px"
+             :children [[re-com/button
+                         :class (style/abcd-question-btn (= i (:correct-answer question)))
+                         :label letter
+                         :on-click #((second (val-set [:correct-answer])) i)]
+                        [els/fancy-input "" (val-set [:possible-answers i]) "400px" ]]]))])
 
 (defn question-edit []
   (let [question (sub ::s/selected-question)
