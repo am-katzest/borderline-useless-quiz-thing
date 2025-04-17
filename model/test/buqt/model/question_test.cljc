@@ -9,7 +9,7 @@
             :points 1
             :state :hidden
             :count 5
-            :possible-answers ["A" "B" "C" "D" "E"]
+            :possible-answers ["" "" "" "" ""]
             :correct-answer 0}
            (sut/question {:type :abcd :count 5})))
   (t/is (thrown? clojure.lang.ExceptionInfo (sut/question {:type :abcd :count 0})))
