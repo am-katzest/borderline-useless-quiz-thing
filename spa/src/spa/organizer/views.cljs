@@ -24,16 +24,16 @@
    :children
    [[re-com/label :label (str "max points: " (sub ::os/max-points))]
     [re-com/box :child [re-com/label :label "users:"]]
-    (for [[id u] (sub ::os/users+names)]
-      ^{:key id}
-      [re-com/h-box
-       :class (style/organizer-users-box-user)
-       :children
-       [[re-com/label
-         :width "3em"
-         :label (sub [::os/participant-points id])]
-        [re-com/label
-         :label (if (and u (not= "" u)) u "[empty]")]]])]])
+    (doall (for [[id u] (sub ::os/users+names)]
+       ^{:key id}
+       [re-com/h-box
+        :class (style/organizer-users-box-user)
+        :children
+        [[re-com/label
+          :width "3em"
+          :label (sub [::os/participant-points id])]
+         [re-com/label
+          :label (if (and u (not= "" u)) u "[empty]")]]]))]])
 
 (defn fancy-input [label [val set] width & {:keys [blur?] :or {blur? false}}]
   [re-com/v-box
