@@ -121,12 +121,11 @@
 (defmethod initialize :text
   [base _]
   (assoc base
-         :answer->fraction {}))
+         :answer->points {}))
 
 (defmethod grade :text
   [question answer]
-  (* (:points question)
-     (get-in question [:answer->fraction answer] 0)))
+  (get-in question [:answer->points answer] 0))
 
 (defmethod invariants :text
   [_]
@@ -134,15 +133,16 @@
 
 (s/defschema text-question
   (into base-question
-        {:answer->fraction {s/Str (s/constrained s/Num #(>= 1 % 0))}}))
+        {:answer->points {s/Str (s/constrained s/Num (complement neg?))}}))
 
 (defmethod validate :text
-  [question]
-  (not (s/check text-question question)))
+  [{:keys [points] :as question}]
+  (and  (not (s/check text-question question))
+        (every? #(>= points %) (vals (:answer->points question)))))
 
 (defmethod secrets :text
   [_]
-  [:answer->fraction])
+  [:answer->points])
 
 (defmethod validate-answer :text
   [_ answer]
