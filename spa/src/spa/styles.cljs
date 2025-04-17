@@ -119,7 +119,17 @@
 (defclass questions-list
   []
   {:background-color clr-primary-a10
+   :scrollbar-width :none
+   :overflow-y :scroll
+   :overflow-x :hidden
    :padding "20px"})
+
+(defclass vertically-scrollable
+  []
+  {:scrollbar-width :none
+   :height "100%"
+   :overflow-y :scroll
+   :overflow-x :hidden})
 
 (defclass questions-list-item
   [selected]
@@ -130,6 +140,9 @@
 (defclass question-edit
   []
   {:padding "20px"
+   :overflow-y :scroll
+   :overflow-x :hidden
+   :scrollbar-width :none
    :background-color clr-primary-a40
    :width "100%"})
 

@@ -20,8 +20,9 @@
      ")"]]])
 
 (defn questions-list []
-  [re-com/v-box
-   :class (style/questions-list)
-   :gap "10px"
-   :children (for [[id question] (sub ::s/questions)]
-               [question-list-item id question])])
+  [:div {:class (style/vertically-scrollable)}
+   [re-com/v-box
+    :gap "10px"
+    :class (style/questions-list)
+    :children (for [[id question] (sub ::s/questions)]
+                [question-list-item id question])]])
