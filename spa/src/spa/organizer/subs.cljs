@@ -11,12 +11,23 @@
    (seq (:id->name state))))
 
 (re-frame/reg-sub
- ::user-points
+ ::participant->answers
  :<- [::base/gui-state]
- (fn [state [_ id]]
-   (qs/tally-points-for-answers-organizer
-    (:questions state)
-    (get-in state [:participant->question->answer id]))))
+ :-> :participant->question->answer)
+
+(re-frame/reg-sub
+ ::participant-answers
+ :<- [::participant->answers]
+ (fn [participant->answers [_ id]]
+   (participant->answers id)))
+
+(re-frame/reg-sub
+ ::participant-points
+ (fn [[_ id]]
+   [(re-frame/subscribe [::base/id->question])
+    (re-frame/subscribe [::participant-answers id])])
+ (fn [[id->question answers]]
+   (qs/tally-points-for-answers-organizer id->question answers)))
 
 (re-frame/reg-sub
  ::max-points
