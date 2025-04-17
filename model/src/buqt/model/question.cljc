@@ -82,7 +82,7 @@
 (defmethod initialize :abcd
   [base {:keys [count]}]
   (u/assert* (<= 2 count 25))
-  (let [answers (vec (take count letters))]
+  (let [answers (repeat count "")]
     (assoc base
            :count count
            :possible-answers answers
