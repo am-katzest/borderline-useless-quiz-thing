@@ -14,14 +14,14 @@
  ::own-answer-to-selected-question
  :<- [::base/gui-state]
  :<- [::base/selected-question-id]
- (fn [state question-id]
-   (get-in state [:answers question-id])))
+ (fn [[state question-id]]
+   (get-in state [:question->answer question-id])))
 
 (re-frame/reg-sub
  ::selected-question-points
  :<- [::base/selected-question]
  :<- [::own-answer-to-selected-question]
- (fn [question answer]
+ (fn [[question answer]]
    (when (q/participant-can-see-answers?
           (:state question))
      (q/grade question answer))))
