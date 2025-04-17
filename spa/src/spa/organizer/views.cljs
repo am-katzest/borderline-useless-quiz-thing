@@ -71,7 +71,7 @@
                           :on-click #((second (val-set [:correct-answer])) i)]
                          [els/fancy-input "" (val-set [:possible-answers i]) "400px" ]]]))
     [re-com/label :label "participant answers:"]
-    [re-com/h-box
+    [re-com/v-box
      :children (doall (for [[id username] (sub ::os/users+names)
                             :let [answer (sub [::os/participant-answer-for-selected-question id])]]
                         ^{:key id}
