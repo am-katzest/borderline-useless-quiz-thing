@@ -86,6 +86,10 @@
       [question-edit question #(evt [::pe/change-answer question-id %])]]]))
 
 
+(defn total-points-box []
+  (let [{min-points :min  max-points :max} (sub ::ps/points)]
+    [display-points-box [min-points max-points] "-" "2.5em"]))
+
 (defn participant-panel []
   [re-com/h-box
    :class (styles/participant-panel)
@@ -101,4 +105,5 @@
               [re-com/v-box
                :size "1"
                :class (styles/participant-right-panel)
-               :children [[username-edit-panel]]]]])
+               :children [[total-points-box]
+                          [username-edit-panel]]]]])

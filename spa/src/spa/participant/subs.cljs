@@ -2,6 +2,7 @@
     (:require
      [re-frame.core :as re-frame]
      [buqt.model.question :as q]
+     [buqt.model.questions :as qs]
      [spa.subs :as base]))
 
 (re-frame/reg-sub
@@ -25,3 +26,11 @@
    (when (q/participant-can-see-answers?
           (:state question))
      (q/grade question answer))))
+
+(re-frame/reg-sub
+ ::points
+ :<- [::base/gui-state]
+ (fn [state]
+   (qs/tally-points-for-answers-participant
+    (:questions state)
+    (:question->answer state))))
