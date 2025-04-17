@@ -168,3 +168,17 @@
  ::clicked-question-on-list
  (fn [db [_ id]]
    (assoc db :current-question id :adding-question? false)))
+
+(re-frame/reg-event-db
+ ::goto-question-with-highest-number
+ (fn [db _]
+   (if-let [newest-question
+            (->> db
+                 :state
+                 c/gui-state
+                 :questions
+                 (filter second)
+                 (map first)
+                 (apply max))]
+     (assoc db :current-question newest-question :adding-question? false)
+     db)))

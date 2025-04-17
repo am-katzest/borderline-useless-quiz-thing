@@ -6,7 +6,7 @@
 (reg-input-event+db
  ::add-question
  (fn [db type desc]
-   [(assoc db :adding-question? false)
+   [(assoc db :adding-question? false :current-question nil)
     {:type :input/add-question
      :desc (assoc desc :type type)}]))
 

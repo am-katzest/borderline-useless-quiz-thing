@@ -8,6 +8,7 @@
    [spa.styles :as styles]
    [buqt.model.question :as q]
    [spa.subs :as s]
+   [spa.events :as e]
    [spa.participant.events :as pe]))
 
 (defn username-edit-panel []
@@ -103,7 +104,9 @@
                :size "4"
                :child (if (sub ::s/selected-question)
                         [question-panel]
-                        "question not selected")]
+                        (do
+                          (evt ::e/goto-question-with-highest-number)
+                          "question not selected"))]
               [re-com/v-box
                :size "1"
                :class (styles/participant-right-panel)

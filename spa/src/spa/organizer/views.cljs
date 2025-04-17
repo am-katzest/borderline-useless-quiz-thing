@@ -9,6 +9,7 @@
    [spa.shared-views :as shared-views]
    [buqt.model.question :as q]
    [spa.ui-elements :as els]
+   [spa.events :as e]
    [spa.organizer.events :as oe]))
 
 (defn url []
@@ -112,7 +113,7 @@
 (defn display-question []
   (if (sub ::s/selected-question)
     [question-edit]
-    "no question selected"))
+    (do (evt ::e/goto-question-with-highest-number) "no question selected")))
 
 (defmulti initial-question-edit (fn [type _] type))
 (defmulti initial-question-type-state identity)
