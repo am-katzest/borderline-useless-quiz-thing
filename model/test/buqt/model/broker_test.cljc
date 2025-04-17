@@ -88,3 +88,17 @@
     (t/is (= 0 (->> organizer :questions vals first :correct-answer)))
     (t/is (= nil (->> participants first :questions second)))
     (t/is (not= 0 (->> participants first :questions vals first :correct-answer)))))
+
+(t/deftest add-message-cnt-test
+  (t/is (= [[1 {:x :a, :cnt 0}]]
+           (broker/add-msgs-cnts broker-a [[1 {:x :a}]])))
+  (t/is (= [[1 {:x :a, :cnt 0}]
+            [2 {:x :b, :cnt 0}]]
+           (broker/add-msgs-cnts broker-a [[1 {:x :a}]
+                                           [2 {:x :b}]])))
+  (t/is (= [[1 {:x :a, :cnt 0}]
+            [2 {:x :b, :cnt 0}]
+            [1 {:x :c, :cnt 1}]]
+           (broker/add-msgs-cnts broker-a [[1 {:x :a}]
+                                           [2 {:x :b}]
+                                           [1 {:x :c}]]))))

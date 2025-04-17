@@ -96,11 +96,14 @@
      [[id msg]]]))
 
 (defn add-msgs-cnts [broker msgs]
-  (let [cnt (fn [id]
-              (:cnt (client broker id)))
-        add-cnt (fn [[target body]]
-                  [target (assoc body :cnt (cnt target))])]
-    (mapv add-cnt msgs)))
+  (loop [broker broker
+         [[id msg] & rest] msgs
+         acc []]
+    (if (nil? id) acc
+        (let [cnt (:cnt (client broker id))
+              msg' (assoc msg :cnt cnt)
+              broker' (update-in broker [:clients id :cnt] inc)]
+          (recur broker' rest (conj acc [id msg']))))))
 
 (defn update-local-clients "applies updates to local client states" [broker msgs]
   (update broker :clients
