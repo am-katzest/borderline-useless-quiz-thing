@@ -39,10 +39,16 @@
 
 (re-frame/reg-sub
  ::questions
+ :<- [::id->question]
+ (fn [id->question]
+   ;; drops hidden and deleted questions
+   (filter second id->question)))
+
+(re-frame/reg-sub
+ ::id->question
  :<- [::gui-state]
  (fn [state]
-   ;; drops hidden and deleted questions
-   (filter second (:questions state))))
+   (:questions state)))
 
 (re-frame/reg-sub
  ::selected-question-id
