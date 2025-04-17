@@ -143,6 +143,19 @@
   [:&:hover {:background-color clr-success-a10
              :color :white}])
 
+(defclass abcd-question-answer-btn
+  [selected? correct? known? editable?]
+  {:background-color (cond editable? (if selected? clr-neutral-a10 clr-neutral-a30)
+                           known? (case [selected? correct?]
+                                    [true true] clr-success-a10
+                                    [true false] clr-danger-a10
+                                    [false true] clr-success-a30
+                                    [false false] clr-danger-a30)
+                           :else (if selected? clr-neutral-a20 clr-neutral-a40))}
+  [:&:hover (when editable?
+              {:background-color clr-neutral-a10
+               :color :white})])
+
 (defclass fancy-input
   []
   {:background-color "#333"

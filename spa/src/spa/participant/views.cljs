@@ -6,6 +6,7 @@
    [spa.shared-views :as shared-views]
    [spa.ui-elements :as els]
    [spa.styles :as styles]
+   [buqt.model.question :as q]
    [spa.subs :as s]
    [spa.participant.events :as pe]))
 
@@ -34,6 +35,28 @@
     [re-com/label :label label]))
 
 (defmulti question-edit (fn [question change-answer!] (:question-type question)))
+
+(defmethod question-edit :abcd
+  [question change-answer!]
+  [re-com/v-box
+   :children
+   [[re-com/label :label "possible answers:"]
+    [re-com/gap :size "10px"]
+    (doall (for [[letter i] (map vector q/letters (range (:count question)))
+                 :let [selected? (= i (sub ::ps/own-answer-to-selected-question))
+                       correct?  (= i (:correct-answer question))
+                       known?    (q/participant-can-see-answers? (:state question))
+                       editable? (q/participant-can-change-answer? (:state question))]]
+             ^{:key i}
+             [re-com/h-box
+              :align :center
+              :padding "5px"
+              :gap "20px"
+              :children [[re-com/button
+                          :class (styles/abcd-question-answer-btn selected? correct? known? editable?)
+                          :label letter
+                          :on-click #(change-answer! i)]
+                         [re-com/label :label (get-in question [:possible-answers i])]]]))]])
 
 (defn question-panel []
   (let [question (sub ::s/selected-question)
