@@ -16,14 +16,23 @@
                  [:username])]
     [els/fancy-input "username" val-set "200px"]))
 
-(defn points-box []
+(defn display-points-box [[a b] separator width]
   [re-com/h-box :class (styles/points-box)
          :gap "5px"
          :children
          [[re-com/label :label "points:"]
-          [re-com/label :style {:min-width "1.5em" :text-align "right"} :label (or (sub ::ps/selected-question-points) "")]
-          [re-com/label :label "/"]
-          [re-com/label :style {:min-width "1.5em"} :label (:points (sub ::s/selected-question))]]])
+          [re-com/label :style {:min-width width :text-align "right"} :label a]
+          [re-com/label :label separator]
+          [re-com/label :style {:min-width width} :label b]]])
+
+(defn points-box []
+  [display-points-box
+   [(or (sub ::ps/selected-question-points) "")
+    (:points (sub ::s/selected-question))]
+   "/"
+   "1.5em"])
+
+
 
 (defn question-state [state]
   (let [label (get {:active "answer question"
