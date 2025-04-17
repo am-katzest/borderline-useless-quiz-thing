@@ -82,6 +82,10 @@
                          :children [[re-com/label :style {:min-width "100px" :text-align :right} :label username]  ":" (get q/letters answer "")]]
                         ))]]])
 
+(defmethod edit-question-type-specific
+  :text
+  [question val-set])
+
 (defn question-edit []
   (let [question (sub ::s/selected-question)
         id (sub ::s/selected-question-id)
@@ -122,11 +126,16 @@
 (defmethod initial-question-type-state :abcd []
   {:count 4})
 
+(defmethod initial-question-type-state :text []
+  {})
+
 (defmethod initial-question-edit :abcd [_type desc]
   [re-com/v-box
    :children
    [[re-com/label :label "number of answers:"]
     [els/+-number-edit desc [:count] #(<= 2 % 20)]]])
+
+(defmethod initial-question-edit :text [_type desc])
 
 (defn add-question []
   (let [question-type (r/atom :abcd)
@@ -143,7 +152,8 @@
                       :on-change (fn [type]
                                    (reset! question-type type)
                                    (reset! question-state (initial-question-type-state type)))
-                      :tabs [{:id :abcd :label "abcd"}]]
+                      :tabs [{:id :abcd :label "abcd"}
+                             {:id :text :label "text"}]]
                      [re-com/button :label "add question!" :on-click #(evt [::oe/add-question @question-type @question-state])]]]
                    [re-com/box :class (style/initial-question-edit-box) :child [initial-question-edit @question-type question-state]]]])]))
 
