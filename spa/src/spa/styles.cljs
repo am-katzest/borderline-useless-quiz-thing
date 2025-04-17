@@ -177,7 +177,7 @@
    :border-width "1px"
    :border-color :black
    :color "white"}
-  [:&:disabled {:background-color "#444" :color "#aaa"}])
+  [:&:disabled {:background-color "#333" :color "#aaa"}])
 
 (defclass question-description
   []
