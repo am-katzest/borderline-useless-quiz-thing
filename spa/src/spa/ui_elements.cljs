@@ -28,7 +28,7 @@
        :label "+"
        :on-click #(set (inc v))]]]))
 
-(defn fancy-input [label [val set] width & {:keys [blur?] :or {blur? false}}]
+(defn fancy-input [label [val set] width & {:keys [blur? disabled?] :or {blur? false disabled? false}}]
   [re-com/v-box
    :width width
    :children [[re-com/label :label label]
@@ -36,6 +36,7 @@
                :class (styles/fancy-input)
                :style {:width width}
                :model val
+               :disabled? disabled?
                :change-on-blur? blur?
                :on-change set]]])
 
