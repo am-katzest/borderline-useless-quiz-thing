@@ -81,7 +81,7 @@
    :margin "5px"
    :padding "5px"
    :width "100%"
-   :background-color clr-primary-a20})
+   :background-color clr-primary-a30})
 
 (defclass organizer-panel
   []
@@ -176,7 +176,8 @@
   {:background-color "#333"
    :border-width "1px"
    :border-color :black
-   :color "white"})
+   :color "white"}
+  [:&:disabled {:background-color "#333" :color "#aaa"}])
 
 (defclass question-description
   []
@@ -189,3 +190,14 @@
   {:padding "10px"
    :padding-right "5px"
    :background-color clr-primary-a20})
+
+(defclass text-grade-btn
+  [selected?]
+  {:font-size :x-small
+   :margin "5px"
+   :padding "3px"
+   :min-width "35px"
+   :color :white
+   :background-color (if selected? clr-primary-a10 clr-primary-a40)}
+  [:&:hover {:background-color clr-primary-a0
+              :color :white}])

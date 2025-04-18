@@ -68,6 +68,16 @@
                           :on-click #(change-answer! i)]
                          [re-com/label :label (get-in question [:possible-answers i])]]]))]])
 
+(defmethod question-edit :text
+  [question change-answer!]
+  [re-com/v-box
+   :padding "10px"
+   :children [[els/fancy-input
+               "your answer:"
+               [(sub ::ps/own-answer-to-selected-question) change-answer!]
+               "400px"
+               :disabled? (not (q/participant-can-change-answer? (:state question)))]]])
+
 (defn question-panel []
   (let [question (sub ::s/selected-question)
         question-id (sub ::s/selected-question-id)]
