@@ -201,3 +201,29 @@
    :background-color (if selected? clr-primary-a10 clr-primary-a40)}
   [:&:hover {:background-color clr-primary-a0
               :color :white}])
+
+(defclass bool-btn
+  [val]
+  {:background-color (if val :white :black)
+   :color (if val :black :white)}
+  [:&:hover {:background-color :#888
+             :color (if val :white :black)}])
+
+(defclass bool-display
+  [val]
+  {:width "1.5em"
+   :height "1.5em"
+   :border-radius "0.3em"
+   :background-color (if val :white :black)
+   :color (if val :black :white)})
+
+(defclass bool-edit-btn
+  [val known? editable? correct?]
+  {:background-color (if known?
+                       (if correct? clr-success-a0 clr-danger-a0)
+                       (if val :white :black))
+   :opacity 1
+   :color (if val :black :white)}
+  [:&:hover (if editable? {:background-color :#888
+                           :color (if val :white :black)}
+                {:color (if val :black :white)})])

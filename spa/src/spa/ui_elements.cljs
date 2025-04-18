@@ -50,3 +50,9 @@
        (let [coerced (coerce val)]
          (when (validate coerced)
            (action (assoc-in body path coerced)))))]))
+
+(defn bool-toggle [[val set]]
+  [re-com/button
+   :class (styles/bool-btn val)
+   :label (if val "T" "F")
+   :on-click #(set (not val))])

@@ -68,6 +68,33 @@
                           :on-click #(change-answer! i)]
                          [re-com/label :label (get-in question [:possible-answers i])]]]))]])
 
+(defmethod question-edit :bools
+  [question change-answer!]
+  [re-com/v-box
+   :children
+   [[re-com/label :label "true/false statements:"]
+    [re-com/gap :size "10px"]
+    (let [raw-answer (sub ::ps/own-answer-to-selected-question)
+          answer (or  raw-answer (vec (repeat (:count question) false)))
+           ; ugly hack, to fix inital "nil" answer displaying as plausible answer to participant
+          _ (when (nil? raw-answer) (change-answer! answer))
+          known?    (q/participant-can-see-answers? (:state question))
+          editable? (q/participant-can-change-answer? (:state question))]
+      (doall (for [i (range (:count question))
+                   :let [val (get answer i)
+                         correct?  (= (get-in question [:key i]) val)]]
+               ^{:key i}
+               [re-com/h-box
+                :align :center
+                :padding "5px"
+                :gap "20px"
+                :children [[re-com/button
+                            :class (styles/bool-edit-btn val known? editable? correct?)
+                            :label (if val "T" "F")
+                            :disabled? (not editable?)
+                            :on-click #(change-answer! (update answer i not))]
+                           [re-com/label :label (get-in question [:descriptions i])]]])))]])
+
 (defmethod question-edit :text
   [question change-answer!]
   [re-com/v-box

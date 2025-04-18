@@ -82,6 +82,39 @@
                          :children [[re-com/label :style {:min-width "100px" :text-align :right} :label username]  ":" (get q/letters answer "")]]
                         ))]]])
 
+(defmethod edit-question-type-specific
+  :bools
+  [question val-set]
+  [re-com/v-box
+   :gap "10px"
+   :children
+   [[re-com/label :label "true/false statements:"]
+    (doall (for [i (range (:count question))]
+             ^{:key i}
+             [re-com/h-box
+              :align :center
+              :padding "5px"
+              :gap "20px"
+              :children [[els/bool-toggle (val-set [:key i])]
+                         [els/fancy-input "" (val-set [:descriptions i]) "400px" ]]]))
+    [re-com/label :label "participant answers:"]
+    [re-com/v-box
+     :children (doall (for [[id username] (sub ::os/users+names)
+                            :let [answer (sub [::os/participant-answer-for-selected-question id])]]
+                        ^{:key id}
+                        [re-com/h-box
+                         :class (style/organizer-users-box-user)
+                         :gap "5px"
+                         :children [[re-com/label :style {:min-width "100px" :text-align :right} :label username]  ":"
+                                    (when answer
+                                      [re-com/h-box
+                                       :align :center
+                                       :gap "6px"
+                                       :children
+                                       (for [bool answer]
+                                         [:div {:class (style/bool-display bool)}])])]]
+                        ))]]])
+
 (defn text-answer-rater [points [val set]]
   [re-com/h-box
    :align :center
@@ -150,6 +183,9 @@
 (defmethod initial-question-type-state :abcd []
   {:count 4})
 
+(defmethod initial-question-type-state :bools []
+  {:count 4})
+
 (defmethod initial-question-type-state :text []
   {})
 
@@ -158,6 +194,12 @@
    :children
    [[re-com/label :label "number of answers:"]
     [els/+-number-edit desc [:count] #(<= 2 % 20)]]])
+
+(defmethod initial-question-edit :bools [_type desc]
+  [re-com/v-box
+   :children
+   [[re-com/label :label "number of true/false statements:"]
+    [els/+-number-edit desc [:count] #(<= 1 % 20)]]])
 
 (defmethod initial-question-edit :text [_type desc])
 
@@ -177,7 +219,8 @@
                                    (reset! question-type type)
                                    (reset! question-state (initial-question-type-state type)))
                       :tabs [{:id :abcd :label "abcd"}
-                             {:id :text :label "text"}]]
+                             {:id :text :label "text"}
+                             {:id :bools :label "bools"}]]
                      [re-com/button :label "add question!" :on-click #(evt [::oe/add-question @question-type @question-state])]]]
                    [re-com/box :class (style/initial-question-edit-box) :child [initial-question-edit @question-type question-state]]]])]))
 
