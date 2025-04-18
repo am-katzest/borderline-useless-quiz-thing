@@ -201,3 +201,10 @@
    :background-color (if selected? clr-primary-a10 clr-primary-a40)}
   [:&:hover {:background-color clr-primary-a0
               :color :white}])
+
+(defclass bool-btn
+  [val]
+  {:background-color (if val :white :black)
+   :color (if val :black :white)}
+  [:&:hover {:background-color :#888
+             :color (if val :white :black)}])

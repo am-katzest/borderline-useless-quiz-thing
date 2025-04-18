@@ -82,6 +82,32 @@
                          :children [[re-com/label :style {:min-width "100px" :text-align :right} :label username]  ":" (get q/letters answer "")]]
                         ))]]])
 
+(defmethod edit-question-type-specific
+  :bools
+  [question val-set]
+  [re-com/v-box
+   :gap "10px"
+   :children
+   [[re-com/label :label "true/false statements:"]
+    (doall (for [i (range (:count question))]
+             ^{:key i}
+             [re-com/h-box
+              :align :center
+              :padding "5px"
+              :gap "20px"
+              :children [[els/bool-toggle (val-set [:key i])]
+                         [els/fancy-input "" (val-set [:descriptions i]) "400px" ]]]))
+    [re-com/label :label "participant answers:"]
+    [re-com/v-box
+     :children (doall (for [[id username] (sub ::os/users+names)
+                            :let [answer (sub [::os/participant-answer-for-selected-question id])]]
+                        ^{:key id}
+                        [re-com/h-box
+                         :class (style/organizer-users-box-user)
+                         :gap "5px"
+                         :children [[re-com/label :style {:min-width "100px" :text-align :right} :label username]  ":" ]]
+                        ))]]])
+
 (defn text-answer-rater [points [val set]]
   [re-com/h-box
    :align :center
