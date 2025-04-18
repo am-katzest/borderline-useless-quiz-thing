@@ -109,7 +109,7 @@
                                     (when answer
                                       [re-com/h-box
                                        :align :center
-                                       :gap "3px"
+                                       :gap "6px"
                                        :children
                                        (for [bool answer]
                                          [:div {:class (style/bool-display bool)}])])]]

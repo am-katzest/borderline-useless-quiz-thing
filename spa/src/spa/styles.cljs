@@ -211,9 +211,9 @@
 
 (defclass bool-display
   [val]
-  {:width "1em"
-   :height "1em"
-   :border-radius "0.2em"
+  {:width "1.5em"
+   :height "1.5em"
+   :border-radius "0.3em"
    :background-color (if val :white :black)
    :color (if val :black :white)})
 
