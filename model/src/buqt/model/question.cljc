@@ -147,3 +147,44 @@
 (defmethod validate-answer :text
   [_ answer]
   (string? answer))
+
+;; bools
+(defmethod initialize :bools
+  [base {:keys [count]}]
+  (u/assert* (<= 1 count))
+  (let [descriptions (vec (repeat count ""))
+        key (vec (repeat count true))]
+    (assoc base
+           :count count
+           :descriptions descriptions
+           :key key)))
+
+(defmethod grade :bools
+  [question answer]
+  (let [correct (count (filter true? (map = answer (:key question))))]
+    (* (:points question) (/ correct (:count question)))))
+
+(defmethod invariants :bools
+  [_]
+  [:count])
+
+(s/defschema bools-question
+  (into base-question
+        {:count (s/constrained s/Int pos-int?)
+         :key (s/constrained [s/Bool] vector?)
+         :descriptions (s/constrained [s/Str] vector?)}))
+
+(defmethod validate :bools
+  [question]
+  (and (not (s/check bools-question question))
+       (= (:count question)
+          (count (:descriptions question))
+          (count (:key question)))))
+
+(defmethod secrets :bools
+  [_]
+  [:key])
+
+(defmethod validate-answer :bools
+  [question answer]
+  (= (count answer) (:count question)))

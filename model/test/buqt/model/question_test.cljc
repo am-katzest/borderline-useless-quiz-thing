@@ -84,3 +84,20 @@
       (t/is (== 0 (sut/grade q1 "meow")))
       (t/is (== 1 (sut/grade q2 "meow")))
       (t/is (== 0.5 (sut/grade q2 "mraw"))))))
+
+(t/deftest bools-type-test
+   (let [q1 (sut/question {:type :bools :count 3})
+        q2 (assoc q1 :key [true false true]
+                  :points 2)]
+    (t/testing "validation"
+      (t/testing "positive" (t/is (= true (sut/validate q1)))
+                 (t/is (= true (sut/validate q2))))
+      (t/testing "negative"
+        (t/is (= false (sut/validate (assoc q1 :descriptions ["meow" "mraw"]))))
+        (t/is (= false (sut/validate (assoc q1 :key '(true false true)))))
+        (t/is (= false (sut/validate (assoc q1 :description '("" "" "")))))))
+    (t/testing "grading"
+      (t/is (== 0 (sut/grade q1 [false false false])))
+      (t/is (== 1 (sut/grade q1 [true true true])))
+      (t/is (== 2/3 (sut/grade q2 [true true false])))
+      (t/is (== 0 (sut/grade q2 [0 nil "meow"]))))))
