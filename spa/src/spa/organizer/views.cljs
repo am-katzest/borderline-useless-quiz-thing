@@ -105,7 +105,14 @@
                         [re-com/h-box
                          :class (style/organizer-users-box-user)
                          :gap "5px"
-                         :children [[re-com/label :style {:min-width "100px" :text-align :right} :label username]  ":" ]]
+                         :children [[re-com/label :style {:min-width "100px" :text-align :right} :label username]  ":"
+                                    (when answer
+                                      [re-com/h-box
+                                       :align :center
+                                       :gap "3px"
+                                       :children
+                                       (for [bool answer]
+                                         [:div {:class (style/bool-display bool)}])])]]
                         ))]]])
 
 (defn text-answer-rater [points [val set]]

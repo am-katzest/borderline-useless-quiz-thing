@@ -209,6 +209,14 @@
   [:&:hover {:background-color :#888
              :color (if val :white :black)}])
 
+(defclass bool-display
+  [val]
+  {:width "1em"
+   :height "1em"
+   :border-radius "0.2em"
+   :background-color (if val :white :black)
+   :color (if val :black :white)})
+
 (defclass bool-edit-btn
   [val known? editable? correct?]
   {:background-color (if known?
