@@ -82,9 +82,33 @@
                          :children [[re-com/label :style {:min-width "100px" :text-align :right} :label username]  ":" (get q/letters answer "")]]
                         ))]]])
 
+(defn text-answer-rater [points [val set]]
+  [re-com/h-box
+   :align :center
+   :children [[re-com/label :label "points:"]
+              (for [[key x] (map-indexed vector (concat (range 0 points 0.5) [points]))
+                    :let [selected? (or (and (= x 0) (nil? val)) (= x val))]]
+                ^{:key key}
+                [re-com/button :class (style/text-grade-btn selected?) :label (str x) :on-click #(set x)])]])
+
 (defmethod edit-question-type-specific
   :text
-  [question val-set])
+  [question val-set]
+  [re-com/v-box :children
+   [[re-com/label :label "participant answers:"]
+    [re-com/v-box
+     :children (doall (for [[id username] (sub ::os/users+names)
+                            :let [answer (sub [::os/participant-answer-for-selected-question id])]]
+                        ^{:key id}
+                        [re-com/v-box
+                         :class (style/organizer-users-box-user)
+                         :children [
+                                    [re-com/h-box
+                                     :gap "5px"
+                                     :children [[re-com/label :style {:min-width "100px" :text-align :right} :label username]  ":" answer]]
+                                    (when answer [text-answer-rater
+                                                  (:points question)
+                                                  (val-set [:answer->points answer])])]]))]]])
 
 (defn question-edit []
   (let [question (sub ::s/selected-question)
