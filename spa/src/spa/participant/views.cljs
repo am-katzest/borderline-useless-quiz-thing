@@ -74,7 +74,10 @@
    :children
    [[re-com/label :label "true/false statements:"]
     [re-com/gap :size "10px"]
-    (let [answer (or (sub ::ps/own-answer-to-selected-question) (vec (repeat (:count question) false)))
+    (let [raw-answer (sub ::ps/own-answer-to-selected-question)
+          answer (or  raw-answer (vec (repeat (:count question) false)))
+           ; ugly hack, to fix inital "nil" answer displaying as plausible answer to participant
+          _ (when (nil? raw-answer) (change-answer! answer))
           known?    (q/participant-can-see-answers? (:state question))
           editable? (q/participant-can-change-answer? (:state question))]
       (doall (for [i (range (:count question))
