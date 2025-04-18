@@ -208,3 +208,14 @@
    :color (if val :black :white)}
   [:&:hover {:background-color :#888
              :color (if val :white :black)}])
+
+(defclass bool-edit-btn
+  [val known? editable? correct?]
+  {:background-color (if known?
+                       (if correct? clr-success-a0 clr-danger-a0)
+                       (if val :white :black))
+   :opacity 1
+   :color (if val :black :white)}
+  [:&:hover (if editable? {:background-color :#888
+                           :color (if val :white :black)}
+                {:color (if val :black :white)})])
