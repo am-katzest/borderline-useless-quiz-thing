@@ -82,7 +82,7 @@
 (defmethod initialize :abcd
   [base {:keys [count]}]
   (u/assert* (<= 2 count 25))
-  (let [answers (repeat count "")]
+  (let [answers (vec (repeat count ""))]
     (assoc base
            :count count
            :possible-answers answers
@@ -100,7 +100,7 @@
   (into base-question
         {:correct-answer (s/constrained s/Int (complement neg?))
          :count (s/constrained s/Int pos-int?)
-         :possible-answers [s/Str]}))
+         :possible-answers (s/constrained [s/Str] vector?)}))
 
 (defmethod validate :abcd
   [question]
