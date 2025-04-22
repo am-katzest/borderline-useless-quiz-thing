@@ -26,9 +26,6 @@
     (t/is (= {5 ""} (:id->name added)))
     (t/is (= {5 {}} (:participant->question->answer added)))))
 
-(t/deftest reset-test
-  "todo")
-
 (t/deftest question-creation-test
   (let [organizer (sut/make-organizer 1)
         input {:type :input/add-question :desc {:type :abcd :count 3}}
