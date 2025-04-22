@@ -1,6 +1,7 @@
 (ns buqt.model.client
   (:require [buqt.model.utils :refer [assert*] :as u]
             [buqt.model.questions :as qs]
+            [buqt.model.impact :as i]
             [buqt.model.question :as q]))
 
 
@@ -52,6 +53,26 @@
   state)
 
 ;; state_x + msg_x = state_{x+1}
+(defmethod i/update->compatibility
+  :default [_ _] {:domain :global :impact :self-contained})
+
+(defmethod i/update->compatibility
+  :update/change-answer
+  [_ {:keys [question-id]}]
+  {:domain [:question question-id] :impact 1})
+
+(defmethod i/update->compatibility
+  :update/change-question
+  [{:keys [questions]} {:keys [question-id question]}]
+  {:domain [:question question-id]
+   :impact (let [existing-question (questions question-id)
+                 state (:state existing-question)
+                 state' (:state question)]
+             (cond (and state (not state')) :final  ;question deleted or hidden from participant
+                   (= state state') :self-contained ;nothing important edited
+                   (not= state state') 2            ;state changed, so it's safe to assume answer changes won't come through
+                   ))})
+
 (defn taking-care-of-cnt [f]
   (fn [state msg]
     (if (= :update/reset (:type msg))
