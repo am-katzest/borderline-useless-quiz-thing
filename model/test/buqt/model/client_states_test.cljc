@@ -95,7 +95,13 @@
             (t/is (= "meow" (get-in client [:base :questions 1 :description])))
             (t/is (= "meow" (get-in client [:gui :questions 1 :description])))
             (t/is (= 1 (:cnt (:base client))))
-            (t/is (= 2 (:cnt (:gui client))))))))))
+            (t/is (= 2 (:cnt (:gui client))))
+            (t/testing "confirming after reapplying"
+              (let [[client msgs] (sut/apply-update client (c/increment-cnt confirm-change-answer))]
+                (t/is (= [] msgs))
+                (t/is (= [] (:updates client)))
+                (t/is (= (:gui client) (:base client)))
+                (t/is (= 0 (get-in client [:base :question->answer 1])))))))))))
 
 (t/deftest reset-test
   (t/testing "asking"
