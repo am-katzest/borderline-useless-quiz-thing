@@ -63,9 +63,9 @@
 
 (defmethod i/update->compatibility
   :update/change-question
-  [{:keys [questions]} {:keys [question-id question]}]
-  {:domain [:question question-id]
-   :impact (let [existing-question (questions question-id)
+  [{:keys [questions]} {:keys [id question]}]
+  {:domain [:question id]
+   :impact (let [existing-question (questions id)
                  state (:state existing-question)
                  state' (:state question)]
              (cond (and state (not state')) :final  ;question deleted or hidden from participant
