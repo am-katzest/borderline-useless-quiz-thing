@@ -62,12 +62,14 @@
           (t/is (= 1 (count (:updates client))))
           (let [[[_ _ expected]] (:updates client)]
             (t/is (= expected (:gui client))))
-          (t/is (= 1 (:cnt (:gui client)))))
+          (t/is (= 1 (:cnt (:gui client))))
+          (t/is (= 0 (:cnt (:base client)))))
         (t/is (= :action/change-answer (:type action)))
         (t/testing "confirming"
           (let [[client msgs] (sut/apply-update client confirm-change-answer)]
             (t/is (= [] msgs))
             (t/is (= (:base client) (:gui client)))
+            (t/is (= 1 (:cnt (:base client))))
             (t/is (= [] (:updates client)))
             (t/is (= 0 (get-in client [:gui :question->answer 1])))))
         (t/testing "replacing"
@@ -78,6 +80,7 @@
             (t/is (= [] msgs))
             (t/is (= [] (:updates client)))
             (t/is (= (:base client) (:gui client)))
+            (t/is (= 1 (:cnt (:base client))))
             (t/is (= :stopped (get-in client [:base :questions 1 :state])))))
         (t/testing "reapplying"
           (let [[client msgs] (sut/apply-update client {:type :update/change-question
@@ -90,7 +93,9 @@
             (t/is (= 0 (get-in client [:gui :question->answer 1])))
             (t/is (not= 0 (get-in client [:base :question->answer 1])))
             (t/is (= "meow" (get-in client [:base :questions 1 :description])))
-            (t/is (= "meow" (get-in client [:gui :questions 1 :description])))))))))
+            (t/is (= "meow" (get-in client [:gui :questions 1 :description])))
+            (t/is (= 1 (:cnt (:base client))))
+            (t/is (= 2 (:cnt (:gui client))))))))))
 
 (t/deftest reset-test
   (t/testing "asking"

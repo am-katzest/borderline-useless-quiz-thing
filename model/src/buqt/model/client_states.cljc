@@ -25,7 +25,7 @@
 (defn reconcile-divergent-updates
   "client-states, update -> client-states"
   [{:keys [base updates]} received-update]
-  (let [base' (c/apply-update base received-update)
+  (let [base' (c/increment-cnt (c/apply-update base received-update))
         compatibility-to-test-against (i/update->compatibility base received-update)]
     (loop [current base'
            [[update compatibility] & updates-todo] updates
@@ -35,7 +35,7 @@
          :gui current
          :updates updates-done}
         (if (i/update-compatible? compatibility-to-test-against compatibility)
-          (let [current (c/apply-update current update)]
+          (let [current (c/increment-cnt (c/apply-update current update))]
             (recur
              current
              updates-todo
