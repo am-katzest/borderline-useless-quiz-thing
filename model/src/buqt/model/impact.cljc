@@ -19,7 +19,7 @@
         (= b :final) true
         (= b :self-contained) true
         (= a :self-contained) true
-        :else (>= a b)))
+        :else (>= b a)))
 
 (defn update-compatible? [unexpected optimistic]
   (if (not= (:domain unexpected) (:domain optimistic))
