@@ -2,19 +2,13 @@
   (:require
    [re-frame.core :as re-frame]
    [spa.utils :as utils]
-   [buqt.model.client :as c]))
-
-(re-frame/reg-sub
- ::name
- (fn [db]
-   (:name db)))
+   [buqt.model.client-states :as cs]))
 
 (re-frame/reg-sub
  ::gui-state
  (fn [db]
    (when-let [state (:state db)]
-     (println (c/gui-state state))
-     (c/gui-state state))))
+     (cs/gui-state state))))
 
 (re-frame/reg-sub
  ::user-type

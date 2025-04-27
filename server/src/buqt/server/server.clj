@@ -7,6 +7,7 @@
             [taoensso.timbre :as log]
             [clojure.edn :as edn]
             [buqt.server.broker :as broker]
+            [buqt.server.config :as config]
             [reitit.ring.middleware.parameters :as parameters]))
 
 (defn id-auth-middleware [handler]
@@ -61,6 +62,7 @@
    request))
 
 (defn run-server [conf]
+  (reset! config/config conf)
   (log/infof "starting http server at port %d" (:port conf))
   (hk-server/run-server #'app conf))
 

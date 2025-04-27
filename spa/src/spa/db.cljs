@@ -4,4 +4,6 @@
   {:name "re-frame"
    :current-question nil
    :adding-question? true
-   :state []})
+   :state {:gui nil
+           :base nil
+           :updates nil}})
