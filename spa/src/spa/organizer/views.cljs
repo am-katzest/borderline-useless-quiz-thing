@@ -223,8 +223,9 @@
                       (for [id [:abcd :text :bools]
                             :let [field (text :question :type id)]]
                         {:id id
-                         :label (field :name)
-                         :tooltip (field :description)})]
+                         :label [els/hover-popover [re-com/label :label (field :name)]
+                                 (field :description)
+                                 :right-center]})]
                      [re-com/button
                       :class (style/text-button style/clr-primary-a20)
                       :label "add question!"
