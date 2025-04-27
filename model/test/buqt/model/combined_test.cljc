@@ -1,4 +1,4 @@
-(ns buqt.model.combined-tests
+(ns buqt.model.combined-test
   (:require [buqt.model.broker :as broker]
             [buqt.model.client :as client]
             [buqt.model.question :as q]
