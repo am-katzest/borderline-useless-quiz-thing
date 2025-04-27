@@ -16,6 +16,7 @@
         set (make-validating-setter model path validate)]
     [re-com/h-box
      :class (styles/number-edit)
+     :gap "5px"
      :children
      [[re-com/button
        :label "-"

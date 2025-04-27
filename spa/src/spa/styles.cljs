@@ -105,7 +105,13 @@
 
 (defclass number-edit
   []
-  {:padding "20px"})
+  {:padding "20px"}
+  ["*:not(.rc-gap)"
+   {:background-color "#333"
+    :border-radius "5px"
+   :border-width "1px"
+   :border-color :black
+   :color "white"}])
 
 (defclass questions-box
   []
