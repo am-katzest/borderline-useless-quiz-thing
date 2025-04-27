@@ -2,6 +2,7 @@
   (:require
    [re-frame.core :as re-frame]
    [re-com.core :as re-com]
+   [reagent.core :as r]
    [spa.styles :as styles]))
 
 (defn make-validating-setter [model path validate]
@@ -56,3 +57,14 @@
    :class (styles/bool-btn val)
    :label (if val "T" "F")
    :on-click #(set (not val))])
+
+(defn hover-popover [anchor popover & [position]]
+  (let [showing? (r/atom false)]
+    [(fn []
+       [:div {:on-mouse-out #(reset! showing? false)
+              :on-mouse-over #(reset! showing? true)}
+        [re-com/popover-anchor-wrapper
+         :showing? showing?
+         :anchor anchor
+         :popover [re-com/popover-content-wrapper  :style {:color :black} :body  popover]
+         :position (or position :below-center)]])]))
