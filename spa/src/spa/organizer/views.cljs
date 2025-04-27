@@ -155,9 +155,7 @@
                  :justify :between
                  :children [[re-com/label :label "edit question!"]
                             [re-com/button
-                             :style {:background-color style/clr-danger-a10
-                                     :border :none
-                                     :color :white}
+                             :class (style/text-button style/clr-danger-a10)
                              :label "delete" :on-click #(evt [::oe/clicked-delete-question id])]]]
                 [re-com/h-box
                  :width "100%"
