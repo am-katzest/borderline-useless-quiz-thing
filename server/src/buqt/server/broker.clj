@@ -2,6 +2,7 @@
   (:require [buqt.model.broker :as m]
             [clojure.core.async :as a]
             [buqt.server.utils :as utils]
+            [buqt.server.config :as config]
             [taoensso.timbre :as log]))
 
 ;; uselessly overengineered, but it takes some complexity away from run-broker
@@ -10,6 +11,9 @@
     (a/go-loop [f nil]
       (when-let [x (a/<! chan)]
         (log/debugf "sender received %s" x)
+        (let [delay (:delay @config/config)]
+          (when (and (int? delay) (pos? delay))
+            (a/<! (a/timeout delay))))
         (recur
          (cond
            (fn? x) x
