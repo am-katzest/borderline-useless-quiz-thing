@@ -5,11 +5,6 @@
    [buqt.model.client :as c]))
 
 (re-frame/reg-sub
- ::name
- (fn [db]
-   (:name db)))
-
-(re-frame/reg-sub
  ::gui-state
  (fn [db]
    (when-let [state (:state db)]
