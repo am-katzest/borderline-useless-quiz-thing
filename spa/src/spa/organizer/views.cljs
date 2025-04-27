@@ -6,6 +6,7 @@
    [reagent.core :as r]
    [spa.subs :as s]
    [spa.styles :as style]
+   [spa.texts :refer [text]]
    [spa.shared-views :as shared-views]
    [buqt.model.question :as q]
    [spa.ui-elements :as els]
@@ -218,9 +219,12 @@
                       :on-change (fn [type]
                                    (reset! question-type type)
                                    (reset! question-state (initial-question-type-state type)))
-                      :tabs [{:id :abcd :label "abcd"}
-                             {:id :text :label "text"}
-                             {:id :bools :label "bools"}]]
+                      :tabs
+                      (for [id [:abcd :text :bools]
+                            :let [field (text :question :type id)]]
+                        {:id id
+                         :label (field :name)
+                         :tooltip (field :description)})]
                      [re-com/button
                       :class (style/text-button style/clr-primary-a20)
                       :label "add question!"
