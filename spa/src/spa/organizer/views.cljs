@@ -223,7 +223,10 @@
                       :tabs [{:id :abcd :label "abcd"}
                              {:id :text :label "text"}
                              {:id :bools :label "bools"}]]
-                     [re-com/button :label "add question!" :on-click #(evt [::oe/add-question @question-type @question-state])]]]
+                     [re-com/button
+                      :class (style/text-button style/clr-primary-a20)
+                      :label "add question!"
+                      :on-click #(evt [::oe/add-question @question-type @question-state])]]]
                    [re-com/box :class (style/initial-question-edit-box) :child [initial-question-edit @question-type question-state]]]])]))
 
 
