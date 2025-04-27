@@ -101,3 +101,18 @@
       (t/is (== 1 (sut/grade q1 [true true true])))
       (t/is (== 2/3 (sut/grade q2 [true true false])))
       (t/is (== 0 (sut/grade q2 [0 nil "meow"]))))))
+
+(t/deftest order-type-test
+  (let [q1 (sut/question {:type :order :count 3})
+        q2 (assoc q1 :correct-order [0 2 1] :points 2)]
+    (t/testing "validation"
+      (t/testing "positive"
+        (t/is (= true (sut/validate q1)))
+        (t/is (= true (sut/validate q2))))
+      (t/testing "negative"
+        (t/is (= false (sut/validate (assoc q1 :descriptions ["meow" "mraw"]))))
+        (t/is (= false (sut/validate (assoc q1 :key '(0 1 2)))))
+        (t/is (= false (sut/validate (assoc q1 :key [0 1 5]))))
+        (t/is (= false (sut/validate (assoc q1 :key [0 1 1]))))
+        (t/is (= false (sut/validate (assoc q1 :key [0 1 1 2]))))
+        (t/is (= false (sut/validate (assoc q1 :description '("" "" "")))))))))

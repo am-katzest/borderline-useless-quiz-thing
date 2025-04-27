@@ -188,3 +188,48 @@
 (defmethod validate-answer :bools
   [question answer]
   (= (count answer) (:count question)))
+
+;; order
+(defmethod initialize :order
+  [base {:keys [count]}]
+  (u/assert* (<= 1 count))
+  (let [descriptions (vec (repeat count ""))
+        key (vec (range count))]
+    (assoc base
+           :count count
+           :descriptions descriptions
+           :correct-order key
+           :grade-method :neighboring-pairs)))
+
+(defmethod invariants :order
+  [_]
+  [:count])
+
+(defn- correct-order? [ints]
+  (= (into #{} ints)
+     (into #{} (range (count ints)))))
+
+(s/defschema order-question
+  (into base-question
+        {:count (s/constrained s/Int #(>= % 2))
+         :correct-order (-> [s/Int]
+                            (s/constrained vector?)
+                            (s/constrained correct-order?))
+         :descriptions (s/constrained [s/Str] vector?)
+         :grade-method (s/constrained s/Keyword #(contains? #{:neighboring-pairs} %))}))
+
+(defmethod validate :order
+  [question]
+  (and (not (s/check order-question question))
+       (= (:count question)
+          (count (:descriptions question))
+          (count (:correct-order question)))))
+
+(defmethod secrets :order
+  [_]
+  [:correct-order])
+
+(defmethod validate-answer :order
+  [question answer]
+  (and (= (count answer) (:count question))
+       (correct-order? answer)))
