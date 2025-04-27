@@ -233,9 +233,7 @@
    :justify :between
    :align :center
    :children [[re-com/label :style {:width "20px"} :label "questions:"]
-              [re-com/button :style {:background-color style/clr-primary-a40
-                                     :border :none
-                                     :color :white}
+              [re-com/button :class (style/text-button style/clr-primary-a40)
                :label "add new"
                :on-click #(evt ::oe/show-add-question-ui)]]])
 

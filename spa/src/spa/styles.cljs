@@ -4,7 +4,7 @@
   (:require
     [spade.core   :refer [defglobal defclass]]
     [garden.units :refer [deg px]]
-    [garden.color :refer [rgba]]))
+    [garden.color :as color]))
 
 (def clr-primary-a0 :#6112a6)
 (def clr-primary-a10 :#521488)
@@ -238,3 +238,11 @@
    [:a {:color :white}
     [:&:hover {:background-color  clr-primary-a0 :border-radius "5px"}]]]
   [:li.active {:background-color clr-primary-a0}])
+
+(defclass text-button [color]
+  {:background-color color
+   :border :none
+   :color :white}
+  [:&:hover {:background-color (color/lighten (color/as-rgb (name color)) 10)
+             :color :white}]
+  [:&:focus {:border :none :color :white}])
