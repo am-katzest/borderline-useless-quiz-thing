@@ -17,17 +17,20 @@
     [re-com/h-box
      :class (styles/number-edit)
      :gap "5px"
+     :align-self :start
+     :align :center
      :children
-     [[re-com/button
-       :label "-"
+     [[re-com/md-icon-button 
+       :md-icon-name "zmdi-minus"
        :on-click #(set (dec v))]
       [re-com/input-text
+       :class (styles/fancy-input)
        :model (str v)
        :change-on-blur? false
        :on-change #(set (parse-long %))
        :width "40px"]
-      [re-com/button
-       :label "+"
+      [re-com/md-icon-button 
+       :md-icon-name "zmdi-plus"
        :on-click #(set (inc v))]]]))
 
 (defn fancy-input [label [val set] width & {:keys [blur? disabled?] :or {blur? false disabled? false}}]
