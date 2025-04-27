@@ -95,7 +95,9 @@
 
 (defclass add-question-box
   []
-  {:padding "20px"})
+  {:padding "20px"
+   :width "100%"
+   :background-color clr-primary-a40})
 
 (defclass initial-question-edit-box
   []
