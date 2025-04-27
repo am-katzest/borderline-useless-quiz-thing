@@ -4,7 +4,7 @@
    [spa.db :as db]
    [ajax.core :as ajax]
    [day8.re-frame.http-fx]
-   [buqt.model.client :as c]
+   [buqt.model.client-states :as cs]
    [cljs.core.async :as a]
    [haslett.format :as fmt]
    [spa.utils :as utils]
@@ -80,7 +80,7 @@
  ::apply-update
  (fn [{:keys [db]} [_ update]]
    (let [state (:state db)
-         [state' msgs] (c/apply-update-whole state update)]
+         [state' msgs] (cs/apply-update state update)]
      {:db (assoc db :state state')
       :send-msgs [db msgs]})))
 
@@ -88,7 +88,7 @@
  ::process-input
  (fn [{:keys [db]} [_ input]]
    (let [state (:state db)
-         [state' msgs] (c/apply-input-whole state input)]
+         [state' msgs] (cs/apply-input state input)]
      {:db (assoc db :state state')
       :send-msgs [db msgs]})))
 
@@ -175,7 +175,7 @@
    (if-let [newest-question
             (->> db
                  :state
-                 c/gui-state
+                 cs/gui-state
                  :questions
                  (filter second)
                  (map first)
