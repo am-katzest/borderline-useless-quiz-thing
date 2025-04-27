@@ -42,6 +42,7 @@
   [re-com/v-box
    :children [[re-com/label :label "set question state"]
               [re-com/horizontal-pill-tabs
+               :class (style/pillbox)
                :model value
                :on-change set
                :tabs [{:id :hidden :label "hidden"}
@@ -214,6 +215,7 @@
                     :children
                     [[re-com/label :label "select question type:"]
                      [re-com/vertical-pill-tabs
+                      :class (style/pillbox)
                       :model question-type
                       :on-change (fn [type]
                                    (reset! question-type type)

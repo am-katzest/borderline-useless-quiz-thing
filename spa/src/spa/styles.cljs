@@ -229,3 +229,12 @@
   [:&:hover (if editable? {:background-color :#888
                            :color (if val :white :black)}
                 {:color (if val :black :white)})])
+
+(defclass pillbox []
+  {:color :white}
+  [:li
+   {:background-color clr-primary-a20
+    :border-radius "5px"}
+   [:a {:color :white}
+    [:&:hover {:background-color  clr-primary-a0 :border-radius "5px"}]]]
+  [:li.active {:background-color clr-primary-a0}])
