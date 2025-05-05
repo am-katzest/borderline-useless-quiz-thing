@@ -221,6 +221,24 @@
          count
          (* fraction-per-answer-in-place))))
 
+(defn- factorial [i]
+  (reduce * (range 1 (inc i))))
+
+(defn- C [n k]
+  (/ (factorial n)
+     (* (factorial k) (factorial (- n k)))))
+
+(defmethod grade-order :global-pairs
+  [_ q-count order]
+  (let [fraction-per-correct-pair (/ (C q-count 2))]
+    (loop [seen []
+           [x & to-see] order
+           correct 0]
+      (if-not x (* correct fraction-per-correct-pair)
+              (recur (conj seen x)
+                     to-see
+                     (->> seen (filter #(> x %)) count (+ correct)))))))
+
 (defn invert-order
   "^-1 the #(reorder-vec <order> %)"
   [order]
@@ -257,7 +275,7 @@
                             (s/constrained vector?)
                             (s/constrained correct-order?))
          :descriptions (s/constrained [s/Str] vector?)
-         :grade-method (s/constrained s/Keyword #(contains? #{:neighboring-pairs :in-place} %))}))
+         :grade-method (s/constrained s/Keyword #(contains? #{:neighboring-pairs :in-place :global-pairs} %))}))
 
 (defmethod validate :order
   [question]

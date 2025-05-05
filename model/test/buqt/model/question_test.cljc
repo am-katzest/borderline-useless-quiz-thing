@@ -150,4 +150,11 @@
             (t/is (== 3/5 (grade [0 1 2 4 3])))
             (t/is (== 2/5 (grade [2 1 4 3 0])))
             (t/is (== 1/5 (grade [1 2 4 3 0])))
-            (t/is (== 0/5 (grade [1 2 3 4 0])))))))))
+            (t/is (== 0/5 (grade [1 2 3 4 0])))))
+        (t/testing "global-pairs"
+          (let [grade (make-grade :global-pairs)]
+            (t/is (== 10/10 (grade [0 1 2 3 4])))
+            (t/is (== 0/10 (grade [4 3 2 1 0])))
+            (t/is (== 1/10 (grade [4 3 1 2 0])))
+            (t/is (== 4/10 (grade [0 4 3 2 1])))
+            (t/is (== 8/10 (grade [0 1 3 4 2])))))))))
