@@ -102,6 +102,17 @@
       (t/is (== 2/3 (sut/grade q2 [true true false])))
       (t/is (== 0 (sut/grade q2 [0 nil "meow"]))))))
 
+(defn all-possible-orders [xs]
+  (if (= (count xs) 1) [[(first xs)]]
+      (for [x xs
+            end (all-possible-orders (disj xs x))]
+        (conj end x))))
+
+(t/deftest reordering-test
+  (t/testing "answers-order"
+    (doseq [order (all-possible-orders #{0 1 2 3})]
+      (t/is (= order (sut/invert-order (sut/invert-order order)))))))
+
 (t/deftest order-type-test
   (let [q1 (sut/question {:type :order :count 3})
         q2 (assoc q1 :correct-order [0 2 1] :points 2)]

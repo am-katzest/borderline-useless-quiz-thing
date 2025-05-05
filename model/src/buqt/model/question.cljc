@@ -201,6 +201,38 @@
            :correct-order key
            :grade-method :neighboring-pairs)))
 
+(defmulti grade-order (fn [method _count _order] method))
+
+(defmethod grade-order :neighboring-pairs
+  [_ q-count order]
+  (let [fraction-per-correct-pair (/ (dec q-count))]
+    (->> order
+         (partition 2 1)
+         (filter (fn [[before after]] (= before (dec after))))
+         count
+         (* fraction-per-correct-pair))))
+
+(defn invert-order
+  "^-1 the #(reorder-vec <order> %)"
+  [order]
+  (loop [acc (vec (repeat (count order) nil))
+         [[i x] & rest] (map-indexed vector order)]
+    (if-not i
+      acc 
+      (recur (assoc acc x i)
+             rest))))
+
+(defn reorder-vec [order xs]
+  (mapv xs order))
+
+(defmethod grade :order
+  [{:keys [grade-method count correct-order points]} answer]
+  (double
+   (* points
+      (grade-order grade-method count (reorder-vec
+                                       (invert-order correct-order)
+                                       answer)))))
+
 (defmethod invariants :order
   [_]
   [:count])
