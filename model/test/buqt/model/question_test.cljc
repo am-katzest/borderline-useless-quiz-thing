@@ -126,4 +126,21 @@
         (t/is (= false (sut/validate (assoc q1 :key [0 1 5]))))
         (t/is (= false (sut/validate (assoc q1 :key [0 1 1]))))
         (t/is (= false (sut/validate (assoc q1 :key [0 1 1 2]))))
-        (t/is (= false (sut/validate (assoc q1 :description '("" "" "")))))))))
+        (t/is (= false (sut/validate (assoc q1 :description '("" "" "")))))))
+    (t/testing "grading"
+      (t/testing "reordering part"
+        (t/is (== 1 (sut/grade q1 [0 1 2])))
+        (t/is (== 1 (sut/grade (assoc q1 :correct-order [1 0 2]) [1 0 2])))
+        (t/is (== 1 (sut/grade (assoc q1 :correct-order [1 2 0]) [1 2 0])))
+        (t/is (== 0 (sut/grade (assoc q1 :correct-order [1 2 0]) [0 2 1]))))
+      (let [make-grade (fn [grade-method]
+                         #(sut/grade (assoc
+                                      (sut/question {:type :order :count 5})
+                                      :grade-method grade-method) %))]
+        (t/testing "neighboring-pairs"
+          (let [grade (make-grade :neighboring-pairs)]
+            (t/is (== 4/4 (grade [0 1 2 3 4])))
+            (t/is (== 2/4 (grade [0 1 2 4 3])))
+            (t/is (== 0/4 (grade [2 1 4 3 0])))
+            (t/is (== 1/4 (grade [1 2 4 3 0])))
+            (t/is (== 3/4 (grade [1 2 3 4 0])))))))))
