@@ -212,6 +212,15 @@
          count
          (* fraction-per-correct-pair))))
 
+(defmethod grade-order :in-place
+  [_ q-count order]
+  (let [fraction-per-answer-in-place (/ q-count)]
+    (->> order
+         (map-indexed vector)
+         (filter (fn [[place element]] (= place element)))
+         count
+         (* fraction-per-answer-in-place))))
+
 (defn invert-order
   "^-1 the #(reorder-vec <order> %)"
   [order]
@@ -248,7 +257,7 @@
                             (s/constrained vector?)
                             (s/constrained correct-order?))
          :descriptions (s/constrained [s/Str] vector?)
-         :grade-method (s/constrained s/Keyword #(contains? #{:neighboring-pairs} %))}))
+         :grade-method (s/constrained s/Keyword #(contains? #{:neighboring-pairs :in-place} %))}))
 
 (defmethod validate :order
   [question]

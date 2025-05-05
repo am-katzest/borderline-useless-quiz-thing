@@ -143,4 +143,11 @@
             (t/is (== 2/4 (grade [0 1 2 4 3])))
             (t/is (== 0/4 (grade [2 1 4 3 0])))
             (t/is (== 1/4 (grade [1 2 4 3 0])))
-            (t/is (== 3/4 (grade [1 2 3 4 0])))))))))
+            (t/is (== 3/4 (grade [1 2 3 4 0])))))
+        (t/testing "in-place"
+          (let [grade (make-grade :in-place)]
+            (t/is (== 5/5 (grade [0 1 2 3 4])))
+            (t/is (== 3/5 (grade [0 1 2 4 3])))
+            (t/is (== 2/5 (grade [2 1 4 3 0])))
+            (t/is (== 1/5 (grade [1 2 4 3 0])))
+            (t/is (== 0/5 (grade [1 2 3 4 0])))))))))
