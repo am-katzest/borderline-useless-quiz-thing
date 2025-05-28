@@ -115,6 +115,26 @@
                                          [:div {:class (style/bool-display bool)}])])]]
                         ))]]])
 
+
+
+(defmethod edit-question-type-specific
+  :order
+  [question val-set]
+  [re-com/v-box
+   :gap "10px"
+   :children
+   [[re-com/label :label "initial order of elements:"]
+    ;; initial order:
+    (doall (for [i (range (:count question))]
+             ^{:key i}
+             [re-com/h-box
+              :align :center
+              :padding "5px"
+              :gap "20px"
+              :children [[els/fancy-input "" (val-set [:descriptions i]) "400px" ]]]))
+    [re-com/label :label "correct order:"]
+    [shared-views/sort-questions val-set question :correct-order]]])
+
 (defn text-answer-rater [points [val set]]
   [re-com/h-box
    :align :center
