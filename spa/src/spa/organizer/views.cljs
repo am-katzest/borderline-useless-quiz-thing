@@ -186,6 +186,9 @@
 (defmethod initial-question-type-state :bools []
   {:count 4})
 
+(defmethod initial-question-type-state :order []
+  {:count 4})
+
 (defmethod initial-question-type-state :text []
   {})
 
@@ -199,6 +202,12 @@
   [re-com/v-box
    :children
    [[re-com/label :label "number of true/false statements:"]
+    [els/+-number-edit desc [:count] #(<= 1 % 20)]]])
+
+(defmethod initial-question-edit :order [_type desc]
+  [re-com/v-box
+   :children
+   [[re-com/label :label "number of elements to order:"]
     [els/+-number-edit desc [:count] #(<= 1 % 20)]]])
 
 (defmethod initial-question-edit :text [_type desc])
@@ -220,7 +229,8 @@
                                    (reset! question-state (initial-question-type-state type)))
                       :tabs [{:id :abcd :label "abcd"}
                              {:id :text :label "text"}
-                             {:id :bools :label "bools"}]]
+                             {:id :bools :label "bools"}
+                             {:id :order :label "order"}]]
                      [re-com/button :label "add question!" :on-click #(evt [::oe/add-question @question-type @question-state])]]]
                    [re-com/box :class (style/initial-question-edit-box) :child [initial-question-edit @question-type question-state]]]])]))
 
