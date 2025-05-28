@@ -249,6 +249,13 @@
       (recur (assoc acc x i)
              rest))))
 
+(defn swap-with-lower [order x]
+  (let [x0 x
+        x1 (inc x)
+        v0 (get order x0)
+        v1 (get order x1)]
+    (assoc order x1 v0 x0 v1)))
+
 (defn reorder-vec [order xs]
   (mapv xs order))
 
