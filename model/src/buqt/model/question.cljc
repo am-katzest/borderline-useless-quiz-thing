@@ -188,3 +188,114 @@
 (defmethod validate-answer :bools
   [question answer]
   (= (count answer) (:count question)))
+
+;; order
+(defmethod initialize :order
+  [base {:keys [count]}]
+  (u/assert* (<= 1 count))
+  (let [descriptions (vec (repeat count ""))
+        key (vec (range count))]
+    (assoc base
+           :count count
+           :descriptions descriptions
+           :correct-order key
+           :grade-method :neighboring-pairs)))
+
+(defmulti grade-order (fn [method _count _order] method))
+
+(defmethod grade-order :neighboring-pairs
+  [_ q-count order]
+  (let [fraction-per-correct-pair (/ (dec q-count))]
+    (->> order
+         (partition 2 1)
+         (filter (fn [[before after]] (= before (dec after))))
+         count
+         (* fraction-per-correct-pair))))
+
+(defmethod grade-order :in-place
+  [_ q-count order]
+  (let [fraction-per-answer-in-place (/ q-count)]
+    (->> order
+         (map-indexed vector)
+         (filter (fn [[place element]] (= place element)))
+         count
+         (* fraction-per-answer-in-place))))
+
+(defn- factorial [i]
+  (reduce * (range 1 (inc i))))
+
+(defn- C [n k]
+  (/ (factorial n)
+     (* (factorial k) (factorial (- n k)))))
+
+(defmethod grade-order :global-pairs
+  [_ q-count order]
+  (let [fraction-per-correct-pair (/ (C q-count 2))]
+    (loop [seen []
+           [x & to-see] order
+           correct 0]
+      (if-not x (* correct fraction-per-correct-pair)
+              (recur (conj seen x)
+                     to-see
+                     (->> seen (filter #(> x %)) count (+ correct)))))))
+
+(defn invert-order
+  "^-1 the #(reorder-vec <order> %)"
+  [order]
+  (loop [acc (vec (repeat (count order) nil))
+         [[i x] & rest] (map-indexed vector order)]
+    (if-not i
+      acc 
+      (recur (assoc acc x i)
+             rest))))
+
+(defn swap-with-lower [order x]
+  (let [x0 x
+        x1 (inc x)
+        v0 (get order x0)
+        v1 (get order x1)]
+    (assoc order x1 v0 x0 v1)))
+
+(defn reorder-vec [order xs]
+  (mapv xs order))
+
+(defmethod grade :order
+  [{:keys [grade-method count correct-order points]} answer]
+  (double
+   (* points
+      (grade-order grade-method count (reorder-vec
+                                       (invert-order correct-order)
+                                       answer)))))
+
+(defmethod invariants :order
+  [_]
+  [:count])
+
+(defn- correct-order? [ints]
+  (= (into #{} ints)
+     (into #{} (range (count ints)))))
+
+(s/defschema order-question
+  (into base-question
+        {:count (s/constrained s/Int #(>= % 2))
+         :correct-order (-> [s/Int]
+                            (s/constrained vector?)
+                            (s/constrained correct-order?))
+         :descriptions (s/constrained [s/Str] vector?)
+         :grade-method (s/constrained s/Keyword #(contains? #{:neighboring-pairs :in-place :global-pairs} %))}))
+
+(defmethod validate :order
+  [question]
+  (and (not (s/check order-question question))
+       (= (:count question)
+          (count (:descriptions question))
+          (count (:correct-order question)))))
+
+(defmethod secrets :order
+  [_]
+  [:correct-order])
+
+(defmethod validate-answer :order
+  [question answer]
+  (and (= (count answer) (:count question))
+       (correct-order? answer)))

@@ -101,3 +101,60 @@
       (t/is (== 1 (sut/grade q1 [true true true])))
       (t/is (== 2/3 (sut/grade q2 [true true false])))
       (t/is (== 0 (sut/grade q2 [0 nil "meow"]))))))
+
+(defn all-possible-orders [xs]
+  (if (= (count xs) 1) [[(first xs)]]
+      (for [x xs
+            end (all-possible-orders (disj xs x))]
+        (conj end x))))
+
+(t/deftest reordering-test
+  (t/testing "answers-order"
+    (doseq [order (all-possible-orders #{0 1 2 3})]
+      (t/is (= order (sut/invert-order (sut/invert-order order)))))))
+
+(t/deftest order-type-test
+  (let [q1 (sut/question {:type :order :count 3})
+        q2 (assoc q1 :correct-order [0 2 1] :points 2)]
+    (t/testing "validation"
+      (t/testing "positive"
+        (t/is (= true (sut/validate q1)))
+        (t/is (= true (sut/validate q2))))
+      (t/testing "negative"
+        (t/is (= false (sut/validate (assoc q1 :descriptions ["meow" "mraw"]))))
+        (t/is (= false (sut/validate (assoc q1 :key '(0 1 2)))))
+        (t/is (= false (sut/validate (assoc q1 :key [0 1 5]))))
+        (t/is (= false (sut/validate (assoc q1 :key [0 1 1]))))
+        (t/is (= false (sut/validate (assoc q1 :key [0 1 1 2]))))
+        (t/is (= false (sut/validate (assoc q1 :description '("" "" "")))))))
+    (t/testing "grading"
+      (t/testing "reordering part"
+        (t/is (== 1 (sut/grade q1 [0 1 2])))
+        (t/is (== 1 (sut/grade (assoc q1 :correct-order [1 0 2]) [1 0 2])))
+        (t/is (== 1 (sut/grade (assoc q1 :correct-order [1 2 0]) [1 2 0])))
+        (t/is (== 0 (sut/grade (assoc q1 :correct-order [1 2 0]) [0 2 1]))))
+      (let [make-grade (fn [grade-method]
+                         #(sut/grade (assoc
+                                      (sut/question {:type :order :count 5})
+                                      :grade-method grade-method) %))]
+        (t/testing "neighboring-pairs"
+          (let [grade (make-grade :neighboring-pairs)]
+            (t/is (== 4/4 (grade [0 1 2 3 4])))
+            (t/is (== 2/4 (grade [0 1 2 4 3])))
+            (t/is (== 0/4 (grade [2 1 4 3 0])))
+            (t/is (== 1/4 (grade [1 2 4 3 0])))
+            (t/is (== 3/4 (grade [1 2 3 4 0])))))
+        (t/testing "in-place"
+          (let [grade (make-grade :in-place)]
+            (t/is (== 5/5 (grade [0 1 2 3 4])))
+            (t/is (== 3/5 (grade [0 1 2 4 3])))
+            (t/is (== 2/5 (grade [2 1 4 3 0])))
+            (t/is (== 1/5 (grade [1 2 4 3 0])))
+            (t/is (== 0/5 (grade [1 2 3 4 0])))))
+        (t/testing "global-pairs"
+          (let [grade (make-grade :global-pairs)]
+            (t/is (== 10/10 (grade [0 1 2 3 4])))
+            (t/is (== 0/10 (grade [4 3 2 1 0])))
+            (t/is (== 1/10 (grade [4 3 1 2 0])))
+            (t/is (== 4/10 (grade [0 4 3 2 1])))
+            (t/is (== 8/10 (grade [0 1 3 4 2])))))))))

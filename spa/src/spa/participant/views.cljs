@@ -95,6 +95,39 @@
                             :on-click #(change-answer! (update answer i not))]
                            [re-com/label :label (get-in question [:descriptions i])]]])))]])
 
+(defn display-order-plain [question positions]
+  [re-com/v-box
+   :children
+   (doall (for [relative positions]
+            [re-com/h-box
+             :padding "5px"
+             :align :center
+             :children [[re-com/md-icon-button :md-icon-name "zdmi-blank" :disabled? true]
+                        [els/fancy-input "" (els/->val-set question [:descriptions relative]) "400px" :disabled? true]]]))])
+
+(defmethod question-edit :order
+  [question change-answer!]
+  [re-com/v-box
+   :children
+   [[re-com/label :label "your answer:"]
+    [re-com/gap :size "10px"]
+    (let [raw-answer (sub ::ps/own-answer-to-selected-question)
+          answer (or  raw-answer (vec (range (:count question))))
+          _ (when (nil? raw-answer) (change-answer! answer))
+          known?    (q/participant-can-see-answers? (:state question))
+          editable? (q/participant-can-change-answer? (:state question))]
+      (if
+          editable?
+          [shared-views/reorder-list question answer change-answer!]
+          [:<>
+           (display-order-plain question answer)
+           (when known?
+             [:<>
+              [re-com/gap :size "20px"]
+              [re-com/label :label "correct answer:"]
+              [re-com/gap :size "10px"]
+              (display-order-plain question (:correct-order question))])]))]])
+
 (defmethod question-edit :text
   [question change-answer!]
   [re-com/v-box
