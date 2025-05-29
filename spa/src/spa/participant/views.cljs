@@ -22,9 +22,9 @@
          :gap "5px"
          :children
          [[re-com/label :label "points:"]
-          [re-com/label :style {:min-width width :text-align "right"} :label a]
+          [re-com/label :style {:min-width width :text-align "right"} :label (els/format-number-for-display a)]
           [re-com/label :label separator]
-          [re-com/label :style {:min-width width} :label b]]])
+          [re-com/label :style {:min-width width} :label (els/format-number-for-display b)]]])
 
 (defn points-box []
   [display-points-box
