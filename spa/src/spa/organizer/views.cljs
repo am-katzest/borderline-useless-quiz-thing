@@ -147,7 +147,24 @@
                   {:id :in-place :label "in place"}
                   {:id :global-pairs :label "global pairs"}]])]]]]
     [re-com/label :label "correct order:"]
-    [shared-views/reorder-list question (:correct-order question) (second (val-set [:correct-order]))]]])
+    [shared-views/reorder-list question (:correct-order question) (second (val-set [:correct-order]))]
+    [re-com/label :label "participant answers:"]
+    [re-com/v-box
+     :children (doall (for [[id username] (sub ::os/users+names)
+                            :let [answer (sub [::os/participant-answer-for-selected-question id])]]
+                        ^{:key id}
+                        [re-com/h-box
+                         :class (style/organizer-users-box-user)
+                         :gap "5px"
+                         :children [[re-com/label :style {:min-width "100px" :text-align :right} :label username]  ":"
+                                    [re-com/gap :size "10px"]
+                                    (when answer
+                                      [re-com/h-box
+                                       :align :center
+                                       :gap "6px"
+                                       :children
+                                       (for [i answer]
+                                         [re-com/label :style {:width "12px"} :label (str i)])])]]))]]])
 
 (defn text-answer-rater [points [val set]]
   [re-com/h-box
