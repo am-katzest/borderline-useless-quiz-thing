@@ -56,3 +56,8 @@
    :class (styles/bool-btn val)
    :label (if val "T" "F")
    :on-click #(set (not val))])
+
+(defn format-number-for-display [x]
+  (cond (integer? x) x
+        (number? x) (.toFixed x 2)
+        :else x))

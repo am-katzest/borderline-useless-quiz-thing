@@ -34,7 +34,7 @@
                :children
                [[re-com/label
                  :width "3em"
-                 :label (sub [::os/participant-points id])]
+                 :label (els/format-number-for-display (sub [::os/participant-points id]))]
                 [re-com/label
                  :label (if (and u (not= "" u)) u "[empty]")]]]))]]])
 
