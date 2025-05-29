@@ -143,6 +143,7 @@
        [[re-com/label :label "grading method:"]
         (let [[val set] (val-set [:grade-method])]
           [re-com/vertical-pill-tabs
+           :class (style/pillbox)
            :model val
            :on-change set
            :tabs [{:id :neighboring-pairs :label "neighboring pairs"}
