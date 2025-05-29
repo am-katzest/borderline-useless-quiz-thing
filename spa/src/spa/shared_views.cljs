@@ -46,18 +46,17 @@
      :on-click #(reorder id-to-swap-with-lower)
      :disabled? (= mode :disabled)]))
 
-(defn sort-questions [val-set question field]
+(defn reorder-list [question order change-order]
   [re-com/v-box
      :children
-   (let [reorder (fn [x] ((let [[order set] (val-set [field])]
-                             (set (q/swap-with-lower order x)))))]
+   (let [reorder (fn [x] (change-order (q/swap-with-lower order x)))]
      (doall (for [[absolute relative]
                   (map vector
                        (range (:count question))
-                       (field question))]
+                       order)]
               [re-com/h-box
                :padding "5px"
                :align :center
                :children [(reordering-arrow absolute (:count question) :left reorder)
-                          [els/fancy-input "" (val-set [:descriptions relative]) "400px" :disabled? true]
+                          [els/fancy-input "" (els/->val-set question [:descriptions relative]) "400px" :disabled? true]
                           (reordering-arrow absolute (:count question) :right reorder)]])))])

@@ -40,7 +40,8 @@
                :change-on-blur? blur?
                :on-change set]]])
 
-(defn make-val-set [body action]
+(defn make-val-set "takes a map and an action, returns a function, which given path, returns a value and a function to set that value"
+  [body action]
   (fn [path & {:keys [validate coerce display]
               :or {display identity
                    coerce identity
@@ -50,6 +51,12 @@
        (let [coerced (coerce val)]
          (when (validate coerced)
            (action (assoc-in body path coerced)))))]))
+
+(defn ->val-set "returns plain, read only val-set"  [body path]
+  ((make-val-set
+    body
+    (fn [& args] (throw (ex-info "val-set used where it shouldn't" {:body body :path path :args args}))))
+   path))
 
 (defn bool-toggle [[val set]]
   [re-com/button

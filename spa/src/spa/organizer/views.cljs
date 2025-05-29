@@ -133,7 +133,7 @@
               :gap "20px"
               :children [[els/fancy-input "" (val-set [:descriptions i]) "400px" ]]]))
     [re-com/label :label "correct order:"]
-    [shared-views/sort-questions val-set question :correct-order]]])
+    [shared-views/reorder-list question (:correct-order question) (second (val-set [:correct-order]))]]])
 
 (defn text-answer-rater [points [val set]]
   [re-com/h-box
