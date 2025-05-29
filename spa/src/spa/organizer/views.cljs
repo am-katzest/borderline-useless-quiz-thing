@@ -6,6 +6,7 @@
    [reagent.core :as r]
    [spa.subs :as s]
    [spa.styles :as style]
+   [spa.texts :refer [text]]
    [spa.shared-views :as shared-views]
    [buqt.model.question :as q]
    [spa.ui-elements :as els]
@@ -42,6 +43,7 @@
   [re-com/v-box
    :children [[re-com/label :label "set question state"]
               [re-com/horizontal-pill-tabs
+               :class (style/pillbox)
                :model value
                :on-change set
                :tabs [{:id :hidden :label "hidden"}
@@ -205,9 +207,7 @@
                  :justify :between
                  :children [[re-com/label :label "edit question!"]
                             [re-com/button
-                             :style {:background-color style/clr-danger-a10
-                                     :border :none
-                                     :color :white}
+                             :class (style/text-button style/clr-danger-a10)
                              :label "delete" :on-click #(evt [::oe/clicked-delete-question id])]]]
                 [re-com/h-box
                  :width "100%"
@@ -274,15 +274,22 @@
                     :children
                     [[re-com/label :label "select question type:"]
                      [re-com/vertical-pill-tabs
+                      :class (style/pillbox)
                       :model question-type
                       :on-change (fn [type]
                                    (reset! question-type type)
                                    (reset! question-state (initial-question-type-state type)))
-                      :tabs [{:id :abcd :label "abcd"}
-                             {:id :text :label "text"}
-                             {:id :bools :label "bools"}
-                             {:id :order :label "order"}]]
-                     [re-com/button :label "add question!" :on-click #(evt [::oe/add-question @question-type @question-state])]]]
+                      :tabs
+                      (for [id [:abcd :text :bools :order]
+                            :let [field (text :question :type id)]]
+                        {:id id
+                         :label [els/hover-popover [re-com/label :label (field :name)]
+                                 (field :description)
+                                 :right-center]})]
+                     [re-com/button
+                      :class (style/text-button style/clr-primary-a20)
+                      :label "add question!"
+                      :on-click #(evt [::oe/add-question @question-type @question-state])]]]
                    [re-com/box :class (style/initial-question-edit-box) :child [initial-question-edit @question-type question-state]]]])]))
 
 
@@ -292,9 +299,7 @@
    :justify :between
    :align :center
    :children [[re-com/label :style {:width "20px"} :label "questions:"]
-              [re-com/button :style {:background-color style/clr-primary-a40
-                                     :border :none
-                                     :color :white}
+              [re-com/button :class (style/text-button style/clr-primary-a40)
                :label "add new"
                :on-click #(evt ::oe/show-add-question-ui)]]])
 

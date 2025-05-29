@@ -4,7 +4,7 @@
   (:require
     [spade.core   :refer [defglobal defclass]]
     [garden.units :refer [deg px]]
-    [garden.color :refer [rgba]]))
+    [garden.color :as color]))
 
 (def clr-primary-a0 :#6112a6)
 (def clr-primary-a10 :#521488)
@@ -95,7 +95,9 @@
 
 (defclass add-question-box
   []
-  {:padding "20px"})
+  {:padding "20px"
+   :width "100%"
+   :background-color clr-primary-a40})
 
 (defclass initial-question-edit-box
   []
@@ -103,7 +105,10 @@
 
 (defclass number-edit
   []
-  {:padding "20px"})
+  {:margin "5px"
+   :padding "5px"
+   :border-radius "15px"
+   :background-color :#222} )
 
 (defclass questions-box
   []
@@ -227,3 +232,20 @@
   [:&:hover (if editable? {:background-color :#888
                            :color (if val :white :black)}
                 {:color (if val :black :white)})])
+
+(defclass pillbox []
+  {:color :white}
+  [:li
+   {:background-color clr-primary-a20
+    :border-radius "5px"}
+   [:a {:color :white}
+    [:&:hover {:background-color  clr-primary-a0 :border-radius "5px"}]]]
+  [:li.active {:background-color clr-primary-a0}])
+
+(defclass text-button [color]
+  {:background-color color
+   :border :none
+   :color :white}
+  [:&:hover {:background-color (color/lighten (color/as-rgb (name color)) 10)
+             :color :white}]
+  [:&:focus {:border :none :color :white}])

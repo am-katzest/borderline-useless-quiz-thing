@@ -2,6 +2,7 @@
   (:require
    [re-frame.core :as re-frame]
    [re-com.core :as re-com]
+   [reagent.core :as r]
    [spa.styles :as styles]))
 
 (defn make-validating-setter [model path validate]
@@ -15,17 +16,21 @@
         set (make-validating-setter model path validate)]
     [re-com/h-box
      :class (styles/number-edit)
+     :gap "5px"
+     :align-self :start
+     :align :center
      :children
-     [[re-com/button
-       :label "-"
+     [[re-com/md-icon-button 
+       :md-icon-name "zmdi-minus"
        :on-click #(set (dec v))]
       [re-com/input-text
+       :class (styles/fancy-input)
        :model (str v)
        :change-on-blur? false
        :on-change #(set (parse-long %))
        :width "40px"]
-      [re-com/button
-       :label "+"
+      [re-com/md-icon-button 
+       :md-icon-name "zmdi-plus"
        :on-click #(set (inc v))]]]))
 
 (defn fancy-input [label [val set] width & {:keys [blur? disabled?] :or {blur? false disabled? false}}]
@@ -68,3 +73,31 @@
   (cond (integer? x) x
         (number? x) (.toFixed x 2)
         :else x))
+
+(defn hover-popover [anchor popover & [position time]]
+  (let [state (r/atom {:id 0
+                       :showing? false})
+        change (fn [state showing?] (-> state
+                                       (assoc :showing? showing?)
+                                       (update :id inc)))
+        show (fn [state] (change state true))
+        hide (fn [state] (change state false))
+
+        swap-if-id-is-unchanged
+        (fn [state id-at-the-time-of-hover]
+          (if (= id-at-the-time-of-hover (:id state))
+            (show state)
+            state))
+
+        make-swapper-that-checks-id
+        (fn []
+          (let [id-at-the-time-of-hover (:id @state)]
+            #(swap! state swap-if-id-is-unchanged id-at-the-time-of-hover)))]
+    [(fn []
+       [:div {:on-mouse-out #(swap! state hide)
+              :on-mouse-over #(js/setTimeout (make-swapper-that-checks-id) (or time 500))}
+        [re-com/popover-anchor-wrapper
+         :showing? (:showing? @state)
+         :anchor anchor
+         :popover [re-com/popover-content-wrapper  :style {:color :black} :body  popover]
+         :position (or position :below-center)]])]))
