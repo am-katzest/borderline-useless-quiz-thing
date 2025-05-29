@@ -123,15 +123,29 @@
   [re-com/v-box
    :gap "10px"
    :children
-   [[re-com/label :label "initial order of elements:"]
-    ;; initial order:
-    (doall (for [i (range (:count question))]
-             ^{:key i}
-             [re-com/h-box
-              :align :center
-              :padding "5px"
-              :gap "20px"
-              :children [[els/fancy-input "" (val-set [:descriptions i]) "400px" ]]]))
+   [[re-com/h-box :children
+     [[re-com/v-box :children
+       [[re-com/label :label "initial order of elements:"]
+        ;; initial order:
+        (doall (for [i (range (:count question))]
+                 ^{:key i}
+                 [re-com/h-box
+                  :align :center
+                  :padding "5px"
+                  :gap "20px"
+                  :children [[els/fancy-input "" (val-set [:descriptions i]) "400px" ]]]))]]
+      [re-com/v-box
+       :margin "20px"
+       :gap "10px"
+       :children
+       [[re-com/label :label "grading method:"]
+        (let [[val set] (val-set [:grade-method])]
+          [re-com/vertical-pill-tabs
+           :model val
+           :on-change set
+           :tabs [{:id :neighboring-pairs :label "neighboring pairs"}
+                  {:id :in-place :label "in place"}
+                  {:id :global-pairs :label "global pairs"}]])]]]]
     [re-com/label :label "correct order:"]
     [shared-views/reorder-list question (:correct-order question) (second (val-set [:correct-order]))]]])
 
