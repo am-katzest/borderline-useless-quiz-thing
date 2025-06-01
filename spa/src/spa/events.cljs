@@ -24,8 +24,7 @@
 (defn start-connection [user-id quiz-id token]
   (a/go
     (js/console.log "starting connection")
-    (let [stream (a/<! (ws/connect ;; "ws://localhost:8642/api/connect"
-                        "ws://localhost:8091"
+    (let [stream (a/<! (ws/connect (str api-root "/connect")
                         {:format fmt/edn}))]
       (a/>! (:out stream) {:type :handshake  :id user-id :quiz-id quiz-id :token token})
       (js/console.log "sent handshake")
