@@ -1,0 +1,17 @@
+services:
+  nginx:
+    image: nginx:1.25.5-alpine
+    ports:
+      - "8763:8763"
+    volumes:
+      - ./router.nginx.conf:/etc/nginx/nginx.conf:ro
+  spa:
+    build:
+      context: ..
+      dockerfile: docker/spa.Dockerfile
+    volumes:
+      - ./spa.nginx.conf:/etc/nginx/nginx.conf:ro
+  server:
+    build:
+      context: ..
+      dockerfile: docker/server.Dockerfile
